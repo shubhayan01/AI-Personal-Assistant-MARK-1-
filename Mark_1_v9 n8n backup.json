@@ -1,0 +1,4338 @@
+{
+  "name": "Mark 1 v9",
+  "nodes": [
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.message }}",
+                    "rightValue": "Add a new client",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "306fb37c-805a-4d9e-97c8-4695c2c2b6f1"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "0ea2d764-1f01-46b3-be18-0b0f96d3f0d4",
+                    "leftValue": "={{ $json.body.message }}",
+                    "rightValue": "Make invoice",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "89327a3d-4b21-466c-b965-2d269ba5ed9f",
+                    "leftValue": "={{ $json.body.message }}",
+                    "rightValue": "Add a reminder",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "477f6ae0-ee2f-4bbf-9cb3-70b9f20e33fe",
+                    "leftValue": "={{ $json.body.message }}",
+                    "rightValue": "Wish client",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ede6ab34-e2e8-43e2-8802-73002a482914",
+                    "leftValue": "={{ $json.body.message }}",
+                    "rightValue": "Add project",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1e5e4a71-02eb-4b10-8e2e-b14335fef832",
+                    "leftValue": "={{ $json.body.message }}",
+                    "rightValue": "Update task",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "30e873dd-9f2d-4aa2-9f2f-055e3f255abd",
+                    "leftValue": "={{ $json.body.message }}",
+                    "rightValue": "Update client timeline",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        740,
+        -240
+      ],
+      "id": "5ff4667a-7d0a-4796-9b9a-52fa2afbdb04",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $json.body?.message || \"\";\nconst lower = input.toLowerCase();\n\nif (lower.startsWith(\"add a new client\") || lower.startsWith(\"add a client\")) {\n  const data = input\n    .replace(/add a new client/i, \"\")\n    .replace(/add a client/i, \"\")\n    .trim();\n\n  const parts = data.split(\",\");\n\n  if (parts.length < 4) {\n    throw new Error(\"Please provide name, email, phone, and office address.\");\n  }\n\n  const [name, email, phone, office_address] = parts.map(p => p.trim());\n\n  return [\n    {\n      json: {\n        action: \"add_client\",\n        name,\n        email,\n        phone,\n        office_address\n      }\n    }\n  ];\n} else {\n  throw new Error(\"Unsupported prompt format.\");\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        920,
+        -600
+      ],
+      "id": "b5a8bf0d-2371-46ae-8c25-21c4fcfe05a9",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $json.body?.message || \"\";\nconst lower = input.toLowerCase();\nlet output = {};\n\nif (lower.match(/^add( a| new)? client/)) {\n  const data = input\n    .replace(/^add( a| new)? client/i, \"\")\n    .trim();\n\n  const parts = data.split(\",\");\n\n  if (parts.length < 4) {\n    throw new Error(\"Please provide name, email, phone, and office address.\");\n  }\n\n  const [name, email, phone, office_address] = parts.map(p => p.trim());\n\n  output = {\n    name,\n    email,\n    phone,\n    office_address\n  };\n}\n\nelse if (lower.match(/^(make|create|generate)( an?|) invoice/)) {\n  const data = input.replace(/^(make|create|generate)( an?|) invoice/i, \"\").trim();\n  const parts = data.split(\",\");\n\n  if (parts.length < 5) {\n    throw new Error(\"Please provide client name, amount, service, status, and date.\");\n  }\n\n  const [client_name, amount, service, status, date] = parts.map(p => p.trim());\n\n  output = {\n    client_name,\n    amount,\n    service,\n    status,\n    date\n  };\n}\n\nelse {\n  throw new Error(\"Unsupported prompt format.\");\n}\n\nreturn [{ json: output }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1020,
+        -440
+      ],
+      "id": "0a355feb-d8c3-4292-b746-46dd5ed1c5d0",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $json.body?.message || \"\";\nconst lower = input.toLowerCase();\nlet output = {};\n\ntry {\n  if (lower.startsWith(\"add a new client\") || lower.startsWith(\"add a client\") || lower.startsWith(\"add client\")) {\n    const data = input.replace(/^add( a| new)? client/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 4) {\n      throw new Error(\"Please provide name, email, phone, and office address.\");\n    }\n\n    const [name, email, phone, office_address] = parts.map(p => p.trim());\n\n    output = {\n      name,\n      email,\n      phone,\n      office_address\n    };\n  }\n\n  else if (\n    lower.startsWith(\"make invoice\") ||\n    lower.startsWith(\"make a invoice\") ||\n    lower.startsWith(\"create invoice\") ||\n    lower.startsWith(\"generate invoice\")\n  ) {\n    const data = input.replace(/(make|create|generate)( an?|) invoice/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 5) {\n      throw new Error(\"Please provide client name, amount, service, status, and date.\");\n    }\n\n    const [client_name, amount, service, status, date] = parts.map(p => p.trim());\n\n    output = {\n      client_name,\n      amount,\n      service,\n      status,\n      date\n    };\n  }\n\n  else if (lower.startsWith(\"add reminder\") || lower.startsWith(\"add a reminder\")) {\n    const data = input.replace(/^add( a|)? reminder/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 4) {\n      throw new Error(\"Please provide event name, event date, time, and notes.\");\n    }\n\n    const [event_name, event_date, time, notes] = parts.map(p => p.trim());\n\n    output = {\n      event_name,\n      event_date,\n      time,\n      notes\n    };\n  }\n\n  else if (lower.startsWith(\"wish client\")) {\n    const data = input.replace(/^wish client/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 3) {\n      throw new Error(\"Please provide client name, email, and date.\");\n    }\n\n    const [client_name, email, event, date] = parts.map(p => p.trim());\n\n    output = {\n      client_name,\n      email,\n      event,\n      date\n    };\n  }\n\n  else {\n    throw new Error(\"Unsupported prompt format.\");\n  }\n\n  return [{ json: output }];\n} catch (error) {\n  return [{ json: { error: error.message } }];\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1140,
+        -100
+      ],
+      "id": "fd991709-508e-40b4-bf9f-40815e2331dd",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $json.body?.message || \"\";\nconst lower = input.toLowerCase();\nlet output = {};\n\ntry {\n  if (lower.startsWith(\"add a new client\") || lower.startsWith(\"add a client\") || lower.startsWith(\"add client\")) {\n    const data = input.replace(/^add( a| new)? client/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 4) {\n      throw new Error(\"Please provide name, email, phone, and office address.\");\n    }\n\n    const [name, email, phone, office_address] = parts.map(p => p.trim());\n\n    output = {\n      name,\n      email,\n      phone,\n      office_address\n    };\n  }\n\n  else if (\n    lower.startsWith(\"make invoice\") ||\n    lower.startsWith(\"make a invoice\") ||\n    lower.startsWith(\"create invoice\") ||\n    lower.startsWith(\"generate invoice\")\n  ) {\n    const data = input.replace(/(make|create|generate)( an?|) invoice/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 5) {\n      throw new Error(\"Please provide client name, amount, service, status, and date.\");\n    }\n\n    const [client_name, amount, service, status, date] = parts.map(p => p.trim());\n\n    output = {\n      client_name,\n      amount,\n      service,\n      status,\n      date\n    };\n  }\n\n  else if (lower.startsWith(\"add reminder\") || lower.startsWith(\"add a reminder\")) {\n    const data = input.replace(/^add( a|)? reminder/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 4) {\n      throw new Error(\"Please provide event name, event date, time, and notes.\");\n    }\n\n    const [event_name, event_date, time, notes] = parts.map(p => p.trim());\n\n    output = {\n      event_name,\n      event_date,\n      time,\n      notes\n    };\n  }\n\n  else if (lower.startsWith(\"wish client\")) {\n    const data = input.replace(/^wish client/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 3) {\n      throw new Error(\"Please provide client name, email, and date.\");\n    }\n\n    const [client_name, email, date] = parts.map(p => p.trim());\n\n    output = {\n      client_name,\n      email,\n      date\n    };\n  }\n\n  else if (\n    lower.startsWith(\"add project\") ||\n    lower.startsWith(\"assign project\") ||\n    lower.startsWith(\"create project\")\n  ) {\n    const data = input.replace(/^(add|assign|create) project( for client)?/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 4) {\n      throw new Error(\"Please provide client name, project name, end date, and email.\");\n    }\n\n    const [client_name, project_name, end_date, email] = parts.map(p => p.trim());\n\n    output = {\n      client_name,\n      project_name,\n      end_date,\n      email\n    };\n  }\n\n  else {\n    throw new Error(\"Unsupported prompt format.\");\n  }\n\n  return [{ json: output }];\n} catch (error) {\n  return [{ json: { error: error.message } }];\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        60
+      ],
+      "id": "b2f0a8fd-33e7-4c89-b9fa-92d268d98219",
+      "name": "Code4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $json.body?.message || \"\";\nconst lower = input.toLowerCase();\nlet output = {};\n\ntry {\n  if (lower.startsWith(\"add a new client\") || lower.startsWith(\"add a client\") || lower.startsWith(\"add client\")) {\n    const data = input.replace(/^add( a| new)? client/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 4) throw new Error(\"Please provide name, email, phone, and office address.\");\n\n    const [name, email, phone, office_address] = parts.map(p => p.trim());\n    output = { name, email, phone, office_address };\n  }\n\n  else if (lower.startsWith(\"make invoice\") || lower.startsWith(\"make a invoice\") || lower.startsWith(\"create invoice\") || lower.startsWith(\"generate invoice\")) {\n    const data = input.replace(/(make|create|generate)( an?|) invoice/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 5) throw new Error(\"Please provide client name, amount, service, status, and date.\");\n\n    const [client_name, amount, service, status, date] = parts.map(p => p.trim());\n    output = { client_name, amount, service, status, date };\n  }\n\n  else if (lower.startsWith(\"add reminder\") || lower.startsWith(\"add a reminder\")) {\n    const data = input.replace(/^add( a|)? reminder/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 4) throw new Error(\"Please provide event name, event date, time, and notes.\");\n\n    const [event_name, event_date, time, notes] = parts.map(p => p.trim());\n    output = { event_name, event_date, time, notes };\n  }\n\n  else if (lower.startsWith(\"wish client\")) {\n    const data = input.replace(/^wish client/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 3) throw new Error(\"Please provide client name, email, and date.\");\n\n    const [client_name, email, date] = parts.map(p => p.trim());\n    output = { client_name, email, date };\n  }\n\n  else if (lower.startsWith(\"add project\") || lower.startsWith(\"assign project\") || lower.startsWith(\"create project\")) {\n    const data = input.replace(/^(add|assign|create) project( for client)?/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 4) throw new Error(\"Please provide client name, project name, end date, and email.\");\n\n    const [client_name, project_name, end_date, email] = parts.map(p => p.trim());\n    output = { client_name, project_name, end_date, email };\n  }\n\n  else if (lower.startsWith(\"update task\") || lower.startsWith(\"add task\") || lower.startsWith(\"assign task\")) {\n    const data = input.replace(/^(update|add|assign) task/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 3) throw new Error(\"Please provide task name, date, and assigned to.\");\n\n    const [task_name, date, assign_to] = parts.map(p => p.trim());\n    output = { task_name, date, assign_to };\n  }\n\n  else {\n    throw new Error(\"Unsupported prompt format.\");\n  }\n\n  return [{ json: output }];\n} catch (error) {\n  return [{ json: { error: error.message } }];\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        220
+      ],
+      "id": "529fbdee-28c7-4211-a02f-9e9102c47bbc",
+      "name": "Code5"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $json.body?.message || \"\";\nconst lower = input.toLowerCase();\nlet output = {};\n\ntry {\n  if (lower.startsWith(\"add a new client\") || lower.startsWith(\"add a client\") || lower.startsWith(\"add client\")) {\n    const data = input.replace(/^add( a| new)? client/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 4) throw new Error(\"Please provide name, email, phone, and office address.\");\n\n    const [name, email, phone, office_address] = parts.map(p => p.trim());\n    output = { name, email, phone, office_address };\n  }\n\n  else if (lower.startsWith(\"make invoice\") || lower.startsWith(\"make a invoice\") || lower.startsWith(\"create invoice\") || lower.startsWith(\"generate invoice\")) {\n    const data = input.replace(/(make|create|generate)( an?|) invoice/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 5) throw new Error(\"Please provide client name, amount, service, status, and date.\");\n\n    const [client_name, amount, service, status, date] = parts.map(p => p.trim());\n    output = { client_name, amount, service, status, date };\n  }\n\n  else if (lower.startsWith(\"add reminder\") || lower.startsWith(\"add a reminder\")) {\n    const data = input.replace(/^add( a|)? reminder/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 4) throw new Error(\"Please provide event name, event date, time, and notes.\");\n\n    const [event_name, event_date, time, notes] = parts.map(p => p.trim());\n    output = { event_name, event_date, time, notes };\n  }\n\n  else if (lower.startsWith(\"wish client\")) {\n    const data = input.replace(/^wish client/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 3) throw new Error(\"Please provide client name, email, and date.\");\n\n    const [client_name, email, date] = parts.map(p => p.trim());\n    output = { client_name, email, date };\n  }\n\n  else if (lower.startsWith(\"add project\") || lower.startsWith(\"assign project\") || lower.startsWith(\"create project\")) {\n    const data = input.replace(/^(add|assign|create) project( for client)?/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 4) throw new Error(\"Please provide client name, project name, end date, and email.\");\n\n    const [client_name, project_name, end_date, email] = parts.map(p => p.trim());\n    output = { client_name, project_name, end_date, email };\n  }\n\n  else if (lower.startsWith(\"update task\") || lower.startsWith(\"add task\") || lower.startsWith(\"assign task\")) {\n    const data = input.replace(/^(update|add|assign) task/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 3) throw new Error(\"Please provide task name, date, and assigned to.\");\n\n    const [task_name, date, assign_to] = parts.map(p => p.trim());\n    output = { task_name, date, assign_to };\n  }\n\n  else if (lower.startsWith(\"update client timeline\") || lower.startsWith(\"add to client timeline\") || lower.startsWith(\"log interaction\")) {\n    const data = input.replace(/^(update client timeline|add to client timeline|log interaction)/i, \"\").trim();\n    const parts = data.split(\",\");\n\n    if (parts.length < 4) throw new Error(\"Please provide client name, interaction type, description, and date.\");\n\n    const [client_name, interaction_type, description, date] = parts.map(p => p.trim());\n    output = { client_name, interaction_type, description, date };\n  }\n\n  else {\n    throw new Error(\"Unsupported prompt format.\");\n  }\n\n  return [{ json: output }];\n} catch (error) {\n  return [{ json: { error: error.message } }];\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        900,
+        400
+      ],
+      "id": "9302e93f-f2ca-4f79-a96b-6fa7d363fd92",
+      "name": "Code6"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.message }}",
+                    "rightValue": "Send data",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "ecfeb9e3-4856-43dc-acbe-727e18d518f5"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        200,
+        -120
+      ],
+      "id": "709b7524-51cc-475e-889d-949a2002efd0",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1eyCy6LDyR-3FbJh9lLgOV7lr9b6-YlWZ3AgAIwwBbgs",
+          "mode": "list",
+          "cachedResultName": "customer data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eyCy6LDyR-3FbJh9lLgOV7lr9b6-YlWZ3AgAIwwBbgs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eyCy6LDyR-3FbJh9lLgOV7lr9b6-YlWZ3AgAIwwBbgs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Client name": "={{ $json.name }}",
+            "Office Address": "={{ $json.office_address }}",
+            "Email": "={{ $json.email }}",
+            "Phone": "={{ $json.phone }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Client name",
+              "displayName": "Client name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Office Address",
+              "displayName": "Office Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1140,
+        -600
+      ],
+      "id": "6ba95a5b-76f0-4b84-97ad-4ba42b83ca0c",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1l99j-3LIImhRlX5fe2fOTeFK7pjA-rSiLxyG2JNHSlc",
+          "mode": "list",
+          "cachedResultName": "mark 1 Revenue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1l99j-3LIImhRlX5fe2fOTeFK7pjA-rSiLxyG2JNHSlc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1l99j-3LIImhRlX5fe2fOTeFK7pjA-rSiLxyG2JNHSlc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Client Name": "={{ $json.client_name }}",
+            "Service": "={{ $json.service }}",
+            "Amount": "={{ $json.amount }}",
+            "Date": "={{ $json.date }}",
+            "Status": "={{ $json.status }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Client Name",
+              "displayName": "Client Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Service",
+              "displayName": "Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Amount",
+              "displayName": "Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1240,
+        -440
+      ],
+      "id": "619d3742-0317-4a4c-8138-43eda4b18563",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Lg89K5GSk34bogDxuZYbqb4vYsRFsuJpX1pImZoM9uo",
+          "mode": "list",
+          "cachedResultName": "customer dates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lg89K5GSk34bogDxuZYbqb4vYsRFsuJpX1pImZoM9uo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lg89K5GSk34bogDxuZYbqb4vYsRFsuJpX1pImZoM9uo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Client name": "={{ $json.client_name }}",
+            "Email": "={{ $json.email }}",
+            "Event": "={{ $json.event }}",
+            "Date": "={{ $json.date }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Client name",
+              "displayName": "Client name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Event",
+              "displayName": "Event",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1400,
+        -100
+      ],
+      "id": "fe5f0ce2-92f3-409a-a131-ab1120514b10",
+      "name": "Google Sheets3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1UP3SXs1METMCiuY_ykvxghoE1frqdes9gvoEkLuK0Vs",
+          "mode": "list",
+          "cachedResultName": "Customer project",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UP3SXs1METMCiuY_ykvxghoE1frqdes9gvoEkLuK0Vs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UP3SXs1METMCiuY_ykvxghoE1frqdes9gvoEkLuK0Vs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Client Name": "={{ $json.client_name }}",
+            "Client Email": "={{ $json.email }}",
+            "Project Name": "={{ $json.project_name }}",
+            "End date": "={{ $json.end_date }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Client Name",
+              "displayName": "Client Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Client Email",
+              "displayName": "Client Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Project Name",
+              "displayName": "Project Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "End date",
+              "displayName": "End date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1300,
+        60
+      ],
+      "id": "086451f5-b2f7-4907-9a83-fca107834153",
+      "name": "Google Sheets4",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "18vhRZXmxP_3Xgb0-I-6Asin6OMjvtaol75gmGrAuCeY",
+          "mode": "list",
+          "cachedResultName": "Task Assign",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18vhRZXmxP_3Xgb0-I-6Asin6OMjvtaol75gmGrAuCeY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18vhRZXmxP_3Xgb0-I-6Asin6OMjvtaol75gmGrAuCeY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Task Name": "={{ $json.task_name }}",
+            "Date": "={{ $json.date }}",
+            "Assigned to": "={{ $json.assign_to }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Task Name",
+              "displayName": "Task Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Assigned to",
+              "displayName": "Assigned to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1220,
+        220
+      ],
+      "id": "46bda723-3a32-402f-970d-2651fe112b5d",
+      "name": "Google Sheets5",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1RtXLfFhI6hh6rwrGByJ0f-589Cx6e2bgTxrVMsrpPV0",
+          "mode": "list",
+          "cachedResultName": "Mark 1 customer timeline",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RtXLfFhI6hh6rwrGByJ0f-589Cx6e2bgTxrVMsrpPV0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RtXLfFhI6hh6rwrGByJ0f-589Cx6e2bgTxrVMsrpPV0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Client Name ": "={{ $json.client_name }}",
+            "Interaction Type": "={{ $json.interaction_type }}",
+            "Description": "={{ $json.description }}",
+            "Date": "={{ $json.date }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Client Name ",
+              "displayName": "Client Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Interaction Type",
+              "displayName": "Interaction Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1120,
+        400
+      ],
+      "id": "cad78632-6ebd-4c00-8a4c-6f4a680d7c90",
+      "name": "Google Sheets6",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "shubhayan.work@gmail.com",
+          "mode": "list",
+          "cachedResultName": "shubhayan.work@gmail.com"
+        },
+        "start": "={{ $json.start.dateTime }}",
+        "end": "={{ $json.end.dateTime }}",
+        "additionalFields": {
+          "description": "={{ $json.description }}",
+          "summary": "={{ $json.summary }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        1400,
+        -260
+      ],
+      "id": "cae6f586-ab3a-495d-bc5a-3fe484dc2754",
+      "name": "Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "vgsna1cqjbT9Pewj",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.message }}",
+                    "rightValue": "Invoice",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "93c24d1a-9a4e-4465-b9f5-3a3fb42afe7a"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "24f3eeb2-e17c-47b8-93b2-22dd13b9b253",
+                    "leftValue": "={{ $json.body.message }}",
+                    "rightValue": "timeline",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b8390977-322f-4d33-ae67-01b6fa172e08",
+                    "leftValue": "={{ $json.body.message }}",
+                    "rightValue": "project",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -120,
+        -80
+      ],
+      "id": "263d2e0c-8582-456f-ad19-74ece9d38536",
+      "name": "Switch2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n JavaScript Code Node - Extract calendar data from chat message\n// Parses natural language messages and formats them for Google Calendar\n\n// Get the input data\nconst inputData = $input.all();\nconst outputData = [];\n\n// Helper function to parse natural language date/time\nfunction parseDateTime(message, baseDate = new Date()) {\n  const today = new Date();\n  const currentYear = today.getFullYear();\n  \n  // Extract time patterns (2pm, 14:00, etc.)\n  const timeRegex = /(\\d{1,2}):?(\\d{2})?\\s*(am|pm)?/gi;\n  const timeMatch = message.match(timeRegex);\n  \n  // Extract date patterns (10 june 2025, june 10, etc.)\n  const dateRegex = /(\\d{1,2})\\s+(january|february|march|april|may|june|july|august|september|october|november|december)\\s*(\\d{4})?/gi;\n  const dateMatch = message.match(dateRegex);\n  \n  let eventDate = new Date();\n  let eventTime = { hour: 14, minute: 0 }; // Default 2pm\n  \n  // Parse date\n  if (dateMatch && dateMatch[0]) {\n    const dateParts = dateMatch[0].match(/(\\d{1,2})\\s+(\\w+)\\s*(\\d{4})?/i);\n    if (dateParts) {\n      const day = parseInt(dateParts[1]);\n      const month = getMonthNumber(dateParts[2]);\n      const year = dateParts[3] ? parseInt(dateParts[3]) : currentYear;\n      eventDate = new Date(year, month, day);\n    }\n  }\n  \n  // Parse time\n  if (timeMatch && timeMatch[0]) {\n    const timeParts = timeMatch[0].match(/(\\d{1,2}):?(\\d{2})?\\s*(am|pm)?/i);\n    if (timeParts) {\n      let hour = parseInt(timeParts[1]);\n      const minute = timeParts[2] ? parseInt(timeParts[2]) : 0;\n      const period = timeParts[3] ? timeParts[3].toLowerCase() : '';\n      \n      // Convert to 24-hour format\n      if (period === 'pm' && hour !== 12) hour += 12;\n      if (period === 'am' && hour === 12) hour = 0;\n      \n      eventTime = { hour, minute };\n    }\n  }\n  \n  // Combine date and time\n  eventDate.setHours(eventTime.hour, eventTime.minute, 0, 0);\n  return eventDate.toISOString();\n}\n\n// Helper function to convert month name to number\nfunction getMonthNumber(monthName) {\n  const months = {\n    january: 0, february: 1, march: 2, april: 3, may: 4, june: 5,\n    july: 6, august: 7, september: 8, october: 9, november: 10, december: 11\n  };\n  return months[monthName.toLowerCase()] || 0;\n}\n\n// Helper function to extract task name (first part)\nfunction extractTaskName(message) {\n  // Remove common prefixes\n  let cleanMessage = message.replace(/^(add a reminder|remind me|schedule|create event)/i, '').trim();\n  \n  // Split by comma to get first part (task name)\n  const parts = cleanMessage.split(',');\n  if (parts.length > 0) {\n    // Remove time/date info from first part\n    const timePattern = /(\\d{1,2}:?\\d{0,2}\\s*(am|pm)?|\\d{1,2}\\s+(january|february|march|april|may|june|july|august|september|october|november|december))/i;\n    const taskName = parts[0].replace(timePattern, '').trim();\n    return taskName || 'Task Reminder';\n  }\n  \n  return 'Task Reminder';\n}\n\n// Helper function to extract task notes (second part)\nfunction extractTaskNotes(message) {\n  // Split by comma to get parts\n  const parts = message.split(',');\n  \n  if (parts.length > 1) {\n    // Get second part as task notes, clean up time/date info\n    const timePattern = /(\\d{1,2}:?\\d{0,2}\\s*(am|pm)?|\\d{1,2}\\s+(january|february|march|april|may|june|july|august|september|october|november|december))/gi;\n    const taskNotes = parts[1].replace(timePattern, '').trim();\n    return taskNotes || '';\n  }\n  \n  return '';\n}\n\n// Process each input item\nfor (const item of inputData) {\n  const data = item.json;\n  \n  // Extract the chat message\n  const message = data.body?.message || '';\n  const sender = data.body?.sender || 'Unknown';\n  const timestamp = data.body?.timestamp || new Date().toISOString();\n  \n  if (message && message.toLowerCase().includes('reminder')) {\n    // Parse the natural language message\n    const taskName = extractTaskName(message);\n    const taskNotes = extractTaskNotes(message);\n    const startDateTime = parseDateTime(message);\n    \n    // Create end time (1 hour after start)\n    const endDateTime = new Date(startDateTime);\n    endDateTime.setHours(endDateTime.getHours() + 1);\n    \n    // Format for Google Calendar node\n    const calendarEvent = {\n      // Required fields\n      summary: taskName,\n      \n      // Start and end times\n      start: {\n        dateTime: startDateTime,\n        timeZone: 'Asia/Kolkata' // Adjust based on your timezone\n      },\n      \n      end: {\n        dateTime: endDateTime.toISOString(),\n        timeZone: 'Asia/Kolkata'\n      },\n      \n      // Optional fields\n      description: ` ${taskNotes}\\n\\nCreated by: ${sender}\\nOriginal timestamp: ${timestamp}`,\n      \n      // Set reminder (15 minutes before)\n      reminders: {\n        useDefault: false,\n        overrides: [\n          {\n            method: 'popup',\n            minutes: 15\n          }\n        ]\n      },\n      \n      // Event status\n      status: 'confirmed'\n    };\n    \n    outputData.push({\n      json: calendarEvent\n    });\n  }\n}\n\n// Return the formatted data for Google Calendar node\nreturn outputData;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        -260
+      ],
+      "id": "18e6a4fd-ea56-4aa0-97c2-38bc8ec33e7f",
+      "name": "Code7"
+    },
+    {
+      "parameters": {
+        "resume": "specificTime",
+        "dateTime": "={{ $json.start && $json.start.dateTime ? new Date(new Date($json.start.dateTime).getTime() - 24*60*60*1000).toISOString() : new Date(Date.now() + 60*1000).toISOString() }}"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2000,
+        -520
+      ],
+      "id": "17b56ef7-f4bb-4e61-84b6-c1dd995f9504",
+      "name": "Wait 1 Day Before",
+      "webhookId": "wait-1-day-webhook-id"
+    },
+    {
+      "parameters": {
+        "chatId": "1316778010",
+        "text": "=Hi! Reminder for tomorrow:\n\nEvent: {{ $json.summary }}\nTime: {{ $json.start.dateTime }}\nNote: {{ $json.description }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2180,
+        -520
+      ],
+      "id": "3b9a3e80-cc5c-446d-94e2-e5506eb48285",
+      "name": "Telegram 1 Day Before",
+      "webhookId": "telegram-1-day-webhook-id",
+      "credentials": {
+        "telegramApi": {
+          "id": "9YwkcBZ65v4QrlIH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "specificTime",
+        "dateTime": "={{ $json.start && $json.start.dateTime ? new Date(new Date($json.start.dateTime).getTime() - 60*60*1000).toISOString() : new Date(Date.now() + 60*1000).toISOString() }}"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2060,
+        -20
+      ],
+      "id": "f1dc3330-6a22-4b13-aeb9-ef8f147fb417",
+      "name": "Wait 1 Hour Before",
+      "webhookId": "wait-1-hour-webhook-id"
+    },
+    {
+      "parameters": {
+        "chatId": "1316778010",
+        "text": "=⏰ Event starts in 1 hour!\n\nEvent: {{ $json.summary }}\nTime: {{ $json.start.dateTime }}\nNote: {{ $json.description }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2220,
+        -20
+      ],
+      "id": "e321132b-abdb-4533-9636-96e684dc0835",
+      "name": "Telegram 1 Hour Before",
+      "webhookId": "telegram-1-hour-webhook-id",
+      "credentials": {
+        "telegramApi": {
+          "id": "9YwkcBZ65v4QrlIH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "1316778010",
+        "text": "=Hi! Reminding you for:\n\nevent:  {{ $json.summary }}\nat:  {{ $json.start.dateTime }}\ndon't forget to:  {{ $json.description }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2300,
+        -280
+      ],
+      "id": "d7a6358e-fe4d-42b3-b37a-b4b6eb06dcc8",
+      "name": "Telegram3",
+      "webhookId": "9da6951e-1c39-4325-89f6-eda499377614",
+      "credentials": {
+        "telegramApi": {
+          "id": "9YwkcBZ65v4QrlIH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendDocument",
+        "chatId": "={{ $json[\"Telegram id\"] }}",
+        "binaryData": true,
+        "additionalFields": {
+          "caption": "Hello there! Mark 1 here iwth your report"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -420,
+        -220
+      ],
+      "id": "9fb0a7dc-bc76-4d1d-a4dc-0a063b58d45a",
+      "name": "Telegram",
+      "webhookId": "cb245f0e-5e75-4db0-8908-b422be7b7382",
+      "credentials": {
+        "telegramApi": {
+          "id": "9YwkcBZ65v4QrlIH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendDocument",
+        "chatId": "={{ $json[\"Telegram id\"] }}",
+        "binaryData": true,
+        "additionalFields": {
+          "caption": "Hello there! Mark 1 here iwth your report"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1080,
+        -60
+      ],
+      "id": "7e6cb193-67e1-4771-9a56-6d8b2e9e391f",
+      "name": "Telegram2",
+      "webhookId": "cb245f0e-5e75-4db0-8908-b422be7b7382",
+      "credentials": {
+        "telegramApi": {
+          "id": "9YwkcBZ65v4QrlIH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1l99j-3LIImhRlX5fe2fOTeFK7pjA-rSiLxyG2JNHSlc",
+          "mode": "list",
+          "cachedResultName": "mark 1 test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1l99j-3LIImhRlX5fe2fOTeFK7pjA-rSiLxyG2JNHSlc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1l99j-3LIImhRlX5fe2fOTeFK7pjA-rSiLxyG2JNHSlc/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -880,
+        -220
+      ],
+      "id": "1a0134ac-cf91-4290-9283-068ebd8c4c60",
+      "name": "Google Sheets2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ✅ Get email from webhook (passed through Google Sheets node)\nconst email = items[0].json.email || items[0].json.clientEmail;\n\n// ✅ Get rows from Google Sheet data (all items are sheet rows)\nconst rows = items.map(item => {\n  // Extract only the sheet data, excluding the email field\n  const { email, clientEmail, ...sheetData } = item.json;\n  return sheetData;\n}).filter(row => Object.keys(row).length > 0); // Remove empty rows\n\nif (!rows.length) {\n  throw new Error(\"No data found in Google Sheet.\");\n}\n\n// ✅ Convert rows to CSV\nconst headers = Object.keys(rows[0]);\nconst csvRows = [\n  headers.join(\",\"),\n  ...rows.map(row =>\n    headers.map(h => `\"${(row[h] || \"\").toString().replace(/\"/g, '\"\"')}\"`).join(\",\")\n  )\n];\nconst csv = csvRows.join(\"\\n\");\n\n// ✅ Return email + CSV as binary file + separate email output\nreturn [\n  {\n    json: {\n      email: email,\n      fileName: \"customer_report.csv\",\n      mimeType: \"text/csv\",\n      clientEmail: email,  // ✅ Added: Separate email field for next node\n      csvRowCount: rows.length,\n      generatedAt: new Date().toISOString()\n    },\n    binary: {\n      data: {\n        data: Buffer.from(csv).toString(\"base64\"),\n        mimeType: \"text/csv\",\n        fileName: \"customer_report.csv\"\n      }\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -740,
+        -220
+      ],
+      "id": "a56a7220-f347-45d4-9da3-c875c627679e",
+      "name": "Code8"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1RtXLfFhI6hh6rwrGByJ0f-589Cx6e2bgTxrVMsrpPV0",
+          "mode": "list",
+          "cachedResultName": "Mark 1 customer timeline",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RtXLfFhI6hh6rwrGByJ0f-589Cx6e2bgTxrVMsrpPV0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RtXLfFhI6hh6rwrGByJ0f-589Cx6e2bgTxrVMsrpPV0/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1520,
+        -60
+      ],
+      "id": "bba60c0b-34e8-4c01-853c-91168f211e84",
+      "name": "Google Sheets7",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ✅ Get email from webhook (passed through Google Sheets node)\nconst email = items[0].json.email || items[0].json.clientEmail;\n\n// ✅ Get rows from Google Sheet data (all items are sheet rows)\nconst rows = items.map(item => {\n  // Extract only the sheet data, excluding the email field\n  const { email, clientEmail, ...sheetData } = item.json;\n  return sheetData;\n}).filter(row => Object.keys(row).length > 0); // Remove empty rows\n\nif (!rows.length) {\n  throw new Error(\"No data found in Google Sheet.\");\n}\n\n// ✅ Convert rows to CSV\nconst headers = Object.keys(rows[0]);\nconst csvRows = [\n  headers.join(\",\"),\n  ...rows.map(row =>\n    headers.map(h => `\"${(row[h] || \"\").toString().replace(/\"/g, '\"\"')}\"`).join(\",\")\n  )\n];\nconst csv = csvRows.join(\"\\n\");\n\n// ✅ Return email + CSV as binary file + separate email output\nreturn [\n  {\n    json: {\n      email: email,\n      fileName: \"customer_report.csv\",\n      mimeType: \"text/csv\",\n      clientEmail: email,  // ✅ Added: Separate email field for next node\n      csvRowCount: rows.length,\n      generatedAt: new Date().toISOString()\n    },\n    binary: {\n      data: {\n        data: Buffer.from(csv).toString(\"base64\"),\n        mimeType: \"text/csv\",\n        fileName: \"customer_report.csv\"\n      }\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1380,
+        -60
+      ],
+      "id": "0d53467f-8e9d-4eaf-921e-770c1aa60a49",
+      "name": "Code9"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1UP3SXs1METMCiuY_ykvxghoE1frqdes9gvoEkLuK0Vs",
+          "mode": "list",
+          "cachedResultName": "Customer project",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UP3SXs1METMCiuY_ykvxghoE1frqdes9gvoEkLuK0Vs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UP3SXs1METMCiuY_ykvxghoE1frqdes9gvoEkLuK0Vs/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -880,
+        160
+      ],
+      "id": "50f0c2d0-5175-46f2-9ade-c659376beb6a",
+      "name": "Google Sheets8",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ✅ Get email from webhook or other source (if available)\nconst email = items[0].json.email || items[0].json.clientEmail || items[0].json['Client Email'];\n\n// ✅ Get rows from Google Sheet data (all items are sheet rows)\nconst rows = items.map(item => {\n  // Extract only the sheet data, excluding metadata fields\n  const { email, clientEmail, row_number, ...sheetData } = item.json;\n  return sheetData;\n}).filter(row => Object.keys(row).length > 0); // Remove empty rows\n\nif (!rows.length) {\n  throw new Error(\"No data found in Google Sheet.\");\n}\n\n// ✅ Convert rows to CSV\nconst headers = Object.keys(rows[0]);\nconst csvRows = [\n  headers.join(\",\"),\n  ...rows.map(row =>\n    headers.map(h => `\"${(row[h] || \"\").toString().replace(/\"/g, '\"\"')}\"`).join(\",\")\n  )\n];\nconst csv = csvRows.join(\"\\n\");\n\n// ✅ Return email + CSV as binary file + separate email output\nreturn [\n  {\n    json: {\n      email: email,\n      fileName: \"project_report.csv\",\n      mimeType: \"text/csv\",\n      clientEmail: email,  // ✅ Separate email field for next node\n      csvRowCount: rows.length,\n      generatedAt: new Date().toISOString()\n    },\n    binary: {\n      data: {\n        data: Buffer.from(csv).toString(\"base64\"),\n        mimeType: \"text/csv\",\n        fileName: \"project_report.csv\"\n      }\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -700,
+        160
+      ],
+      "id": "2d9717bb-9db0-441e-b4f0-003963a4feca",
+      "name": "Code10"
+    },
+    {
+      "parameters": {
+        "operation": "sendDocument",
+        "chatId": "={{ $json[\"Telegram id\"] }}",
+        "binaryData": true,
+        "additionalFields": {
+          "caption": "Hello there! Mark 1 here iwth your report"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -360,
+        180
+      ],
+      "id": "2e4b7b9c-0762-4ca3-94f1-673b3b085f5f",
+      "name": "Telegram1",
+      "webhookId": "cb245f0e-5e75-4db0-8908-b422be7b7382",
+      "credentials": {
+        "telegramApi": {
+          "id": "9YwkcBZ65v4QrlIH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        2320,
+        140
+      ],
+      "id": "5d2f98ae-0589-420c-bb9b-09330c1b6dda",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Lg89K5GSk34bogDxuZYbqb4vYsRFsuJpX1pImZoM9uo",
+          "mode": "list",
+          "cachedResultName": "customer dates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lg89K5GSk34bogDxuZYbqb4vYsRFsuJpX1pImZoM9uo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lg89K5GSk34bogDxuZYbqb4vYsRFsuJpX1pImZoM9uo/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2540,
+        140
+      ],
+      "id": "69401c72-1dd4-472c-8cc8-616a0916583a",
+      "name": "Google Sheets12",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get today's date in YYYY-MM-DD format\nconst today = new Date().toISOString().split('T')[0];\n\n// Filter events for today\nconst todaysEvents = $input.all().filter(item => {\n  return item.json.Date === today;\n});\n\n// Return filtered results\nreturn todaysEvents;"
+      },
+      "id": "244b2837-721a-47f7-a531-674f4aee682c",
+      "name": "Filter Today's End Dates1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2720,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0cb38e34-ac1b-4955-bc9b-c1c7847e3f85",
+              "leftValue": "={{ $json[\"Client name\"] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2900,
+        140
+      ],
+      "id": "69597af4-74e6-4e0a-a067-abe4a0cbd0b7",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Wishing you prosperity - MARK 1",
+        "emailType": "text",
+        "message": "=Greeting of the day! team novus wishes you all the positivity for your {{ $json.Event }}\n\nMARK 1 - AI assistant\nTeam novus",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        3120,
+        40
+      ],
+      "id": "9f5fbdde-5045-4436-a406-0e618099a87b",
+      "name": "Gmail4",
+      "webhookId": "10533d0e-360a-41a9-a422-185ad028dbf5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VPvt3QZfqvhb53Un",
+          "name": "Gmail account 3"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "b9c75dfc-7392-4308-abc2-5c3a852b804d",
+      "name": "No Projects Today1",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3120,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.message }}",
+                    "rightValue": "Remind me tomorrow",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "6d127c30-657a-45f7-b256-17a37b11f8a3"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        500,
+        80
+      ],
+      "id": "899627fd-a5de-4007-8dc6-64ca94f9cefb",
+      "name": "Switch4"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Y2G6k9Tnf4FGD4iP8c3FHhty-6gOLBRJXACClPZzhxk",
+          "mode": "list",
+          "cachedResultName": "To do",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y2G6k9Tnf4FGD4iP8c3FHhty-6gOLBRJXACClPZzhxk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y2G6k9Tnf4FGD4iP8c3FHhty-6gOLBRJXACClPZzhxk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "task ": "={{ $json.task }}",
+            "date ": "={{ $json.date }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "task ",
+              "displayName": "task ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date ",
+              "displayName": "date ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        500,
+        540
+      ],
+      "id": "57f0bafa-56d8-408f-9535-23e3b88c3834",
+      "name": "Google Sheets13",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// N8N JavaScript Code to transform webhook data for Google Sheets\n// This code should be placed in a \"Code\" node in n8n\n\n// Get the input data\nconst inputData = $input.all();\n\n// Function to parse relative dates and convert to Google Sheets date format\nfunction parseRelativeDate(text, baseDate = new Date()) {\n  const today = new Date(baseDate);\n  today.setHours(0, 0, 0, 0); // Reset time to start of day\n  \n  const lowerText = text.toLowerCase().trim();\n  \n  // Define relative date patterns\n  const patterns = [\n    // Tomorrow variations\n    { \n      regex: /\\b(tomorrow|tomm?orrow|tom+orrow|tmrw|2morrow)\\b/i, \n      days: 1 \n    },\n    // Day after tomorrow variations\n    { \n      regex: /\\b(day after tom+orrow|day after tomorrow|overmorrow|2 days? from now)\\b/i, \n      days: 2 \n    },\n    // Today variations\n    { \n      regex: /\\b(today|this day)\\b/i, \n      days: 0 \n    },\n    // Yesterday variations\n    { \n      regex: /\\b(yesterday|last day)\\b/i, \n      days: -1 \n    },\n    // Next week\n    { \n      regex: /\\b(next week)\\b/i, \n      days: 7 \n    },\n    // Specific day patterns (next Monday, etc.)\n    { \n      regex: /\\b(next\\s+)?(monday|mon)\\b/i, \n      getDate: () => getNextWeekday(today, 1) \n    },\n    { \n      regex: /\\b(next\\s+)?(tuesday|tue)\\b/i, \n      getDate: () => getNextWeekday(today, 2) \n    },\n    { \n      regex: /\\b(next\\s+)?(wednesday|wed)\\b/i, \n      getDate: () => getNextWeekday(today, 3) \n    },\n    { \n      regex: /\\b(next\\s+)?(thursday|thu)\\b/i, \n      getDate: () => getNextWeekday(today, 4) \n    },\n    { \n      regex: /\\b(next\\s+)?(friday|fri)\\b/i, \n      getDate: () => getNextWeekday(today, 5) \n    },\n    { \n      regex: /\\b(next\\s+)?(saturday|sat)\\b/i, \n      getDate: () => getNextWeekday(today, 6) \n    },\n    { \n      regex: /\\b(next\\s+)?(sunday|sun)\\b/i, \n      getDate: () => getNextWeekday(today, 0) \n    },\n    // Number of days patterns\n    { \n      regex: /\\b(\\d+)\\s+days?\\s+from\\s+now\\b/i, \n      getDays: (match) => parseInt(match[1]) \n    },\n    { \n      regex: /\\bin\\s+(\\d+)\\s+days?\\b/i, \n      getDays: (match) => parseInt(match[1]) \n    }\n  ];\n  \n  // Helper function to get next occurrence of a weekday\n  function getNextWeekday(date, targetDay) {\n    const currentDay = date.getDay();\n    let daysToAdd = targetDay - currentDay;\n    if (daysToAdd <= 0) {\n      daysToAdd += 7; // Next week\n    }\n    const nextDate = new Date(date);\n    nextDate.setDate(date.getDate() + daysToAdd);\n    return nextDate;\n  }\n  \n  // Check each pattern\n  for (const pattern of patterns) {\n    const match = lowerText.match(pattern.regex);\n    if (match) {\n      let targetDate;\n      \n      if (pattern.getDate) {\n        targetDate = pattern.getDate();\n      } else if (pattern.getDays) {\n        const days = pattern.getDays(match);\n        targetDate = new Date(today);\n        targetDate.setDate(today.getDate() + days);\n      } else if (pattern.days !== undefined) {\n        targetDate = new Date(today);\n        targetDate.setDate(today.getDate() + pattern.days);\n      }\n      \n      if (targetDate) {\n        // ADD ONE EXTRA DAY HERE\n        targetDate.setDate(targetDate.getDate() + 1);\n        \n        // Format for Google Sheets (YYYY-MM-DD)\n        return targetDate.toISOString().split('T')[0];\n      }\n    }\n  }\n  \n  // Try to parse as regular date\n  const parsedDate = new Date(text);\n  if (!isNaN(parsedDate.getTime())) {\n    // ADD ONE EXTRA DAY FOR REGULAR DATES TOO\n    parsedDate.setDate(parsedDate.getDate() + 1);\n    return parsedDate.toISOString().split('T')[0];\n  }\n  \n  // If no date found, default to today + 1\n  const defaultDate = new Date(today);\n  defaultDate.setDate(today.getDate() + 1);\n  return defaultDate.toISOString().split('T')[0];\n}\n\n// Function to extract task and date from message\nfunction extractTaskAndDate(message) {\n  let task = message;\n  let dateText = 'today'; // default\n  \n  // Define all date keywords\n  const dateWords = ['tomorrow', 'today', 'yesterday', 'next week', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'tomm', 'tommorrow', 'tmrw', '2morrow', 'day after tomorrow', 'overmorrow'];\n  \n  // Step 1: Remove \"remind me\" from the beginning\n  task = task.replace(/^remind me\\s*/i, '').trim();\n  \n  // Step 2: Check if it starts with \"to\" and remove it\n  task = task.replace(/^to\\s+/i, '').trim();\n  \n  // Step 3: Find date in the message\n  const lowerTask = task.toLowerCase();\n  let foundDate = null;\n  \n  // Look for date words in the task\n  for (const dateWord of dateWords) {\n    const regex = new RegExp('\\\\b' + dateWord + '\\\\b', 'i');\n    if (regex.test(lowerTask)) {\n      foundDate = dateWord;\n      dateText = dateWord;\n      break;\n    }\n  }\n  \n  // Step 4: Remove the date from the task\n  if (foundDate) {\n    const dateRegex = new RegExp('\\\\b' + foundDate + '\\\\b', 'gi');\n    task = task.replace(dateRegex, '').trim();\n  }\n  \n  // Step 5: Clean up extra spaces and \"to\" words\n  task = task.replace(/\\s+/g, ' ').trim();\n  task = task.replace(/^to\\s+/i, '').trim(); // Remove any remaining \"to\" at the start\n  \n  return { task, dateText };\n}\n\n// Transform the data\nconst transformedData = inputData.map(item => {\n  const webhookData = item.json;\n  const message = webhookData.body?.message || '';\n  \n  // Extract task and date from the message\n  const { task, dateText } = extractTaskAndDate(message);\n  \n  // Parse the date\n  const parsedDate = parseRelativeDate(dateText);\n  \n  return {\n    task: task,\n    date: parsedDate\n  };\n});\n\n// Return the transformed data\nreturn transformedData;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        300
+      ],
+      "id": "9477b0c5-1b44-4f7d-bb6d-064831e6b2c3",
+      "name": "Code14"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Y2G6k9Tnf4FGD4iP8c3FHhty-6gOLBRJXACClPZzhxk",
+          "mode": "list",
+          "cachedResultName": "To do",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y2G6k9Tnf4FGD4iP8c3FHhty-6gOLBRJXACClPZzhxk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Y2G6k9Tnf4FGD4iP8c3FHhty-6gOLBRJXACClPZzhxk/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        500,
+        -500
+      ],
+      "id": "85265fc5-5361-4f56-a173-80979110a5ce",
+      "name": "Google Sheets14",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// N8N JavaScript Code to filter data by current date\n// This code should be placed in a \"Code\" node in n8n\n\n// Get the input data\nconst inputData = $input.all();\n\n// Get today's date in YYYY-MM-DD format\nconst today = new Date();\nconst todayString = today.toISOString().split('T')[0];\n\nconsole.log('Today\\'s date:', todayString);\n\n// Filter the data to only include today's tasks\nconst filteredData = [];\n\ninputData.forEach(item => {\n  const data = item.json;\n  \n  // Handle both array of objects and single object\n  if (Array.isArray(data)) {\n    // If input is an array of tasks\n    data.forEach(task => {\n      const taskDate = task.date?.trim() || task['date ']?.trim(); // Handle both 'date' and 'date ' (with space)\n      \n      if (taskDate === todayString) {\n        filteredData.push({\n          row_number: task.row_number || null,\n          task: task.task?.trim() || task['task ']?.trim() || '', // Handle both 'task' and 'task ' (with space)\n          date: taskDate\n        });\n      }\n    });\n  } else {\n    // If input is a single task object\n    const taskDate = data.date?.trim() || data['date ']?.trim();\n    \n    if (taskDate === todayString) {\n      filteredData.push({\n        row_number: data.row_number || null,\n        task: data.task?.trim() || data['task ']?.trim() || '',\n        date: taskDate\n      });\n    }\n  }\n});\n\nconsole.log('Filtered tasks for today:', filteredData);\n\n// Return the filtered data\n// If no tasks for today, return empty array\nreturn filteredData.length > 0 ? filteredData : [];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        -620
+      ],
+      "id": "be9dd025-8681-4816-a2ef-e6c2fd10c894",
+      "name": "Code15",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        500,
+        -820
+      ],
+      "id": "c1d58a3f-272d-4417-8c97-851ca9b0aeb1",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1oppVkHPB6Rq3V4zS54H9RsOl3iuMW-Lqm7qZLbkLGrA",
+          "mode": "list",
+          "cachedResultName": "Task Status",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oppVkHPB6Rq3V4zS54H9RsOl3iuMW-Lqm7qZLbkLGrA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oppVkHPB6Rq3V4zS54H9RsOl3iuMW-Lqm7qZLbkLGrA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Task status": "={{ $json.body.newStatus }}",
+            "Updated by ": "={{ $json.body.updatedBy }}",
+            "Task name": "={{ $json.body.taskName }}"
+          },
+          "matchingColumns": [
+            "Task name"
+          ],
+          "schema": [
+            {
+              "id": "Task status",
+              "displayName": "Task status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Updated by ",
+              "displayName": "Updated by ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Task name",
+              "displayName": "Task name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3300,
+        -300
+      ],
+      "id": "de40f15d-bd30-48a0-9537-2e6d3b8a1004",
+      "name": "Google Sheets15",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 3
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        3700,
+        -300
+      ],
+      "id": "1d3fc019-91c5-443a-93af-8abc98e7978c",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "18vhRZXmxP_3Xgb0-I-6Asin6OMjvtaol75gmGrAuCeY",
+          "mode": "list",
+          "cachedResultName": "Task Assign",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18vhRZXmxP_3Xgb0-I-6Asin6OMjvtaol75gmGrAuCeY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18vhRZXmxP_3Xgb0-I-6Asin6OMjvtaol75gmGrAuCeY/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3880,
+        -460
+      ],
+      "id": "b14e396b-8598-496a-ac22-a14ef5c1774f",
+      "name": "Google Sheets16",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1oppVkHPB6Rq3V4zS54H9RsOl3iuMW-Lqm7qZLbkLGrA",
+          "mode": "list",
+          "cachedResultName": "Task Status",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oppVkHPB6Rq3V4zS54H9RsOl3iuMW-Lqm7qZLbkLGrA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oppVkHPB6Rq3V4zS54H9RsOl3iuMW-Lqm7qZLbkLGrA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3900,
+        -180
+      ],
+      "id": "a00d8a10-d679-4b5d-9f56-98ebeafe8e43",
+      "name": "Google Sheets17",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        4200,
+        -340
+      ],
+      "id": "036510f7-5a91-4da8-9a1b-8e81c658b82f",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1kjESWW8SOgJ_VSO1sbm0aD4yOB6SSp95eBM-FQzSPTc",
+          "mode": "list",
+          "cachedResultName": "Task report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kjESWW8SOgJ_VSO1sbm0aD4yOB6SSp95eBM-FQzSPTc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kjESWW8SOgJ_VSO1sbm0aD4yOB6SSp95eBM-FQzSPTc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Task name": "={{ $json['Task Name'] }}",
+            "date": "={{ $json.Date }}",
+            "assigned to": "={{ $json['Assigned to'] }}",
+            "status": "={{ $json['Task status'] }}",
+            "updated by": "={{ $json['Updated by '] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Task name",
+              "displayName": "Task name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "assigned to",
+              "displayName": "assigned to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated by",
+              "displayName": "updated by",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        4420,
+        -340
+      ],
+      "id": "37e0c95d-4659-463c-b1e1-19bdfc59eca0",
+      "name": "Google Sheets18",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendDocument",
+        "chatId": "={{ $json['Telegram id'] }}",
+        "binaryData": true,
+        "additionalFields": {
+          "caption": "Hello! Mark 1 here, your report is ready"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1880,
+        -40
+      ],
+      "id": "b843e8e0-a1cd-4a82-8375-afa7028eec7b",
+      "name": "Telegram4",
+      "webhookId": "beb92dcc-6f5f-4af6-bf78-df83ff3c90aa",
+      "credentials": {
+        "telegramApi": {
+          "id": "9YwkcBZ65v4QrlIH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "888f713f-cdd0-45e6-a7d9-db2c766c158d",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -2840,
+        0
+      ],
+      "id": "4721a54a-89b8-4f0b-91ab-17ebae87f90e",
+      "name": "Send report",
+      "webhookId": "888f713f-cdd0-45e6-a7d9-db2c766c158d"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.type }}",
+                    "rightValue": "revenue",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "092a22f6-2da1-4bff-bc50-298023ee48c4"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b4e6519a-7b70-4fa4-91fe-fc6d08e2ea2b",
+                    "leftValue": "={{ $json.body.type }}",
+                    "rightValue": "customer",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "10efc6b2-bd07-41b0-a5b5-ed4266832ecf",
+                    "leftValue": "={{ $json.body.type }}",
+                    "rightValue": "task",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a506f2bf-7cd3-4fff-9b1f-425f69239457",
+                    "leftValue": "={{ $json.body.type }}",
+                    "rightValue": "project",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "bc826d48-437a-412d-882f-2e130298d109",
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -2620,
+        -40
+      ],
+      "id": "8c4ddd27-a0ca-45af-b930-7534cc41d635",
+      "name": "Switch3"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1l99j-3LIImhRlX5fe2fOTeFK7pjA-rSiLxyG2JNHSlc",
+          "mode": "list",
+          "cachedResultName": "mark 1 test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1l99j-3LIImhRlX5fe2fOTeFK7pjA-rSiLxyG2JNHSlc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1l99j-3LIImhRlX5fe2fOTeFK7pjA-rSiLxyG2JNHSlc/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -2420,
+        -300
+      ],
+      "id": "99406cf7-0a82-423a-b4b2-6d2b0a27aca6",
+      "name": "Google Sheets9",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// First, let's see what data structure we're actually receiving\nconsole.log('=== DEBUGGING DATA STRUCTURE ===');\nconsole.log('typeof items:', typeof items);\nconsole.log('items:', JSON.stringify(items, null, 2));\nconsole.log('typeof $json:', typeof $json);\nconsole.log('$json:', JSON.stringify($json, null, 2));\n\n// Try to access data in different ways\nlet rows = [];\n\n// Method 1: Direct items array\nif (items && Array.isArray(items) && items.length > 0) {\n  console.log('Using items array, length:', items.length);\n  rows = items.map(item => {\n    if (item.json) return item.json;\n    if (item.binary) return item.binary;\n    return item;\n  });\n} \n// Method 2: $input.all() method\nelse if (typeof $input !== 'undefined') {\n  try {\n    const allInputs = $input.all();\n    console.log('Using $input.all(), length:', allInputs.length);\n    rows = allInputs.map(item => item.json || item);\n  } catch (e) {\n    console.log('$input.all() failed:', e.message);\n  }\n}\n// Method 3: Direct $json access\nelse if ($json) {\n  console.log('Using $json directly');\n  if (Array.isArray($json)) {\n    rows = $json;\n  } else {\n    rows = [$json];\n  }\n}\n\nconsole.log('Final rows length:', rows.length);\nconsole.log('First few rows:', JSON.stringify(rows.slice(0, 3), null, 2));\n\n// If still no data, try accessing the previous node's output differently\nif (rows.length === 0) {\n  console.log('No data found, trying alternative access methods...');\n  \n  // Try accessing by node name (replace 'Google Sheets' with your actual node name)\n  try {\n    const gsData = $('Google Sheets').all();\n    console.log('Found data via node name:', gsData.length);\n    rows = gsData.map(item => item.json || item);\n  } catch (e) {\n    console.log('Node name access failed:', e.message);\n  }\n  \n  // Last resort - check if data is nested differently\n  if (rows.length === 0 && items) {\n    console.log('Trying to access nested data...');\n    if (items[0] && items[0].json && items[0].json.values) {\n      rows = items[0].json.values;\n    } else if (items[0] && items[0].json && items[0].json.data) {\n      rows = items[0].json.data;\n    }\n  }\n}\n\n// Date filtering for last 30 days\nconst now = new Date();\nconst thirtyDaysAgo = new Date();\nthirtyDaysAgo.setDate(now.getDate() - 30);\n\nlet total = 0;\nlet paid = 0;\nlet partial = 0;\nlet unpaid = 0;\nlet processedRows = 0;\nlet skippedRows = 0;\n\n// Client analysis tracking\nconst clientTotals = {};\nlet maxClient = { name: '', amount: 0 };\nlet minClient = { name: '', amount: Infinity };\n\n// Track clients with unpaid and partial payments\nconst unpaidClients = [];\nconst partialClients = [];\n\nconsole.log('\\n=== PROCESSING ROWS ===');\n\nrows.forEach((row, index) => {\n  console.log(`\\nRow ${index}:`, JSON.stringify(row, null, 2));\n  \n  // Skip if row is null or undefined\n  if (!row || typeof row !== 'object') {\n    console.log(`Row ${index}: Skipping - not an object`);\n    skippedRows++;\n    return;\n  }\n  \n  // Get all possible field names from the row\n  const fieldNames = Object.keys(row);\n  console.log(`Row ${index} fields:`, fieldNames);\n  \n  // Date filtering - try all possible date fields\n  const dateFields = ['date', 'Date', 'created_date', 'timestamp', 'created_at', 'Created Date', 'Date Created'];\n  let rowDate = null;\n  let dateField = null;\n  \n  for (const field of dateFields) {\n    if (row[field]) {\n      rowDate = new Date(row[field]);\n      if (!isNaN(rowDate.getTime())) {\n        dateField = field;\n        break;\n      }\n    }\n  }\n  \n  // If date found, check if it's within last 30 days\n  if (rowDate && dateField) {\n    console.log(`Row ${index}: Date from field '${dateField}': ${rowDate.toDateString()}`);\n    if (rowDate < thirtyDaysAgo) {\n      console.log(`Row ${index}: Skipping - date is older than 30 days`);\n      skippedRows++;\n      return;\n    }\n  } else {\n    console.log(`Row ${index}: No valid date found, including anyway`);\n  }\n  \n  // Find client name field\n  const clientFields = ['Client Name', 'client_name', 'client', 'Client', 'customer', 'Customer', 'Customer Name', 'name', 'Name'];\n  let clientName = '';\n  let clientField = null;\n  \n  for (const field of clientFields) {\n    if (row[field] !== undefined && row[field] !== null && row[field] !== '') {\n      clientName = String(row[field]).trim();\n      clientField = field;\n      break;\n    }\n  }\n  \n  console.log(`Row ${index}: Client from field '${clientField}': \"${clientName}\"`);\n  \n  // Find amount field\n  const amountFields = ['amount', 'Amount', 'total', 'Total', 'value', 'Value', 'Price', 'price', 'Cost', 'cost'];\n  let amount = 0;\n  let amountField = null;\n  \n  for (const field of amountFields) {\n    if (row[field] !== undefined && row[field] !== null && row[field] !== '') {\n      let amtStr = String(row[field]).replace(/[₹,$,\\s]/g, '');\n      amount = parseFloat(amtStr);\n      if (!isNaN(amount) && amount > 0) {\n        amountField = field;\n        break;\n      }\n    }\n  }\n  \n  console.log(`Row ${index}: Amount from field '${amountField}': ${amount}`);\n  \n  if (isNaN(amount) || amount <= 0) {\n    console.log(`Row ${index}: Skipping - invalid amount`);\n    skippedRows++;\n    return;\n  }\n  \n  // Find status field\n  const statusFields = ['status', 'Status', 'payment_status', 'Payment Status', 'Payment', 'payment'];\n  let status = '';\n  let statusField = null;\n  \n  for (const field of statusFields) {\n    if (row[field] !== undefined && row[field] !== null && row[field] !== '') {\n      status = String(row[field]).toLowerCase().trim();\n      statusField = field;\n      break;\n    }\n  }\n  \n  console.log(`Row ${index}: Status from field '${statusField}': \"${status}\"`);\n  \n  // Add to totals\n  total += amount;\n  processedRows++;\n  \n  // Track client totals\n  if (clientName) {\n    // Normalize client name for consistent tracking (case-insensitive)\n    const normalizedClientName = clientName.toLowerCase();\n    if (!clientTotals[normalizedClientName]) {\n      clientTotals[normalizedClientName] = {\n        originalName: clientName,\n        totalAmount: 0,\n        transactionCount: 0\n      };\n    }\n    clientTotals[normalizedClientName].totalAmount += amount;\n    clientTotals[normalizedClientName].transactionCount += 1;\n    \n    // Update max/min client tracking\n    const clientTotal = clientTotals[normalizedClientName].totalAmount;\n    if (clientTotal > maxClient.amount) {\n      maxClient = { name: clientTotals[normalizedClientName].originalName, amount: clientTotal };\n    }\n    if (clientTotal < minClient.amount) {\n      minClient = { name: clientTotals[normalizedClientName].originalName, amount: clientTotal };\n    }\n  }\n  \n  // Categorize by status and track client names for unpaid/partial\n  if (status.includes('paid') && !status.includes('partial')) {\n    paid += amount;\n    console.log(`Row ${index}: Categorized as PAID`);\n  } else if (status.includes('partial')) {\n    partial += amount;\n    console.log(`Row ${index}: Categorized as PARTIAL`);\n    \n    // Add to partial clients list if not already present\n    if (clientName && !partialClients.some(client => client.name.toLowerCase() === clientName.toLowerCase())) {\n      partialClients.push({\n        name: clientName,\n        amount: amount,\n        service: row['Service'] || row['service'] || 'N/A',\n        date: rowDate ? rowDate.toDateString() : 'N/A'\n      });\n    }\n  } else {\n    unpaid += amount;\n    console.log(`Row ${index}: Categorized as UNPAID`);\n    \n    // Add to unpaid clients list if not already present\n    if (clientName && !unpaidClients.some(client => client.name.toLowerCase() === clientName.toLowerCase())) {\n      unpaidClients.push({\n        name: clientName,\n        amount: amount,\n        service: row['Service'] || row['service'] || 'N/A',\n        date: rowDate ? rowDate.toDateString() : 'N/A'\n      });\n    }\n  }\n});\n\n// Reset min client if no valid clients found\nif (minClient.amount === Infinity) {\n  minClient = { name: '', amount: 0 };\n}\n\nconsole.log('\\n=== CLIENT ANALYSIS ===');\nconsole.log('Client totals:', clientTotals);\nconsole.log('Max client:', maxClient);\nconsole.log('Min client:', minClient);\nconsole.log('Unpaid clients:', unpaidClients);\nconsole.log('Partial clients:', partialClients);\n\nconsole.log('\\n=== FINAL RESULTS ===');\nconsole.log('Total rows found:', rows.length);\nconsole.log('Processed rows:', processedRows);\nconsole.log('Skipped rows:', skippedRows);\nconsole.log('Total amount:', total);\nconsole.log('Paid:', paid);\nconsole.log('Partial:', partial);\nconsole.log('Unpaid:', unpaid);\n\n// Create detailed client breakdown for CSV\nlet clientBreakdown = '';\nconst sortedClients = Object.values(clientTotals).sort((a, b) => b.totalAmount - a.totalAmount);\nsortedClients.forEach(client => {\n  clientBreakdown += `${client.originalName},\"${client.totalAmount.toFixed(2)}\",${client.transactionCount}\\n`;\n});\n\n// Create unpaid clients section for CSV\nlet unpaidClientsCSV = '';\nunpaidClients.forEach(client => {\n  unpaidClientsCSV += `${client.name},\"${client.amount.toFixed(2)}\",\"${client.service}\",\"${client.date}\"\\n`;\n});\n\n// Create partial clients section for CSV\nlet partialClientsCSV = '';\npartialClients.forEach(client => {\n  partialClientsCSV += `${client.name},\"${client.amount.toFixed(2)}\",\"${client.service}\",\"${client.date}\"\\n`;\n});\n\n// Create comprehensive CSV\nconst csv = `Summary,Amount (INR),Count\nTotal Amount,\"${total.toFixed(2)}\",${processedRows}\nPaid,\"${paid.toFixed(2)}\",\nPartial,\"${partial.toFixed(2)}\",\nUnpaid,\"${unpaid.toFixed(2)}\",\n,,\nClient Analysis,,\nMaximum Amount Client,\"${maxClient.name}\",\"${maxClient.amount.toFixed(2)}\"\nMinimum Amount Client,\"${minClient.name}\",\"${minClient.amount.toFixed(2)}\"\n,,\nUnpaid Clients,,\nClient Name,Amount,Service,Date\n${unpaidClientsCSV},,\nPartial Payment Clients,,\nClient Name,Amount,Service,Date\n${partialClientsCSV},,\nClient Breakdown (All),,\nClient Name,Total Amount,Transaction Count\n${clientBreakdown},,\nStatistics,,\nTotal Clients,${Object.keys(clientTotals).length},\nUnpaid Clients Count,${unpaidClients.length},\nPartial Payment Clients Count,${partialClients.length},\nRows Processed,${processedRows},\nRows Skipped,${skippedRows},\nDate Range,\"Last 30 days\",`;\n\nreturn [{\n  json: {\n    email: $json[\"email\"] || \"default@email.com\",\n    summary: {\n      total: total,\n      paid: paid,\n      partial: partial,\n      unpaid: unpaid,\n      rowsProcessed: processedRows,\n      rowsSkipped: skippedRows\n    },\n    clientAnalysis: {\n      maxClient: maxClient,\n      minClient: minClient,\n      totalClients: Object.keys(clientTotals).length,\n      clientBreakdown: sortedClients,\n      unpaidClients: unpaidClients,\n      partialClients: partialClients\n    },\n    paymentStatus: {\n      unpaidClients: unpaidClients.map(c => ({ name: c.name, amount: c.amount, service: c.service, date: c.date })),\n      partialClients: partialClients.map(c => ({ name: c.name, amount: c.amount, service: c.service, date: c.date }))\n    },\n    debug: {\n      totalRowsFound: rows.length,\n      sampleRow: rows[0] || null,\n      fieldNames: rows[0] ? Object.keys(rows[0]) : []\n    }\n  },\n  binary: {\n    data: {\n      data: Buffer.from(csv).toString(\"base64\"),\n      mimeType: \"text/csv\",\n      fileName: `revenue_report_${now.toISOString().split('T')[0]}.csv`\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2260,
+        -300
+      ],
+      "id": "94357b69-c9da-48e8-80c9-c7016eb37838",
+      "name": "Code11"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1eyCy6LDyR-3FbJh9lLgOV7lr9b6-YlWZ3AgAIwwBbgs",
+          "mode": "list",
+          "cachedResultName": "customer data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eyCy6LDyR-3FbJh9lLgOV7lr9b6-YlWZ3AgAIwwBbgs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eyCy6LDyR-3FbJh9lLgOV7lr9b6-YlWZ3AgAIwwBbgs/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -2420,
+        -100
+      ],
+      "id": "cb2ce7e4-67bc-4825-834d-8befd13a31b2",
+      "name": "Google Sheets10",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1kjESWW8SOgJ_VSO1sbm0aD4yOB6SSp95eBM-FQzSPTc",
+          "mode": "list",
+          "cachedResultName": "Task report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kjESWW8SOgJ_VSO1sbm0aD4yOB6SSp95eBM-FQzSPTc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kjESWW8SOgJ_VSO1sbm0aD4yOB6SSp95eBM-FQzSPTc/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -2420,
+        80
+      ],
+      "id": "d407c559-09f3-4807-afd4-8a7332acc8ae",
+      "name": "Google Sheets11",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// First, let's see what data structure we're actually receiving\nconsole.log('=== CLIENT SHEET DEBUGGING DATA STRUCTURE ===');\nconsole.log('typeof items:', typeof items);\nconsole.log('items:', JSON.stringify(items, null, 2));\nconsole.log('typeof $json:', typeof $json);\nconsole.log('$json:', JSON.stringify($json, null, 2));\n\n// Try to access data in different ways\nlet rows = [];\n\n// Method 1: Direct items array\nif (items && Array.isArray(items) && items.length > 0) {\n  console.log('Using items array, length:', items.length);\n  rows = items.map(item => {\n    if (item.json) return item.json;\n    if (item.binary) return item.binary;\n    return item;\n  });\n} \n// Method 2: $input.all() method\nelse if (typeof $input !== 'undefined') {\n  try {\n    const allInputs = $input.all();\n    console.log('Using $input.all(), length:', allInputs.length);\n    rows = allInputs.map(item => item.json || item);\n  } catch (e) {\n    console.log('$input.all() failed:', e.message);\n  }\n}\n// Method 3: Direct $json access\nelse if ($json) {\n  console.log('Using $json directly');\n  if (Array.isArray($json)) {\n    rows = $json;\n  } else {\n    rows = [$json];\n  }\n}\n\nconsole.log('Final rows length:', rows.length);\nconsole.log('First few rows:', JSON.stringify(rows.slice(0, 3), null, 2));\n\n// If still no data, try accessing the previous node's output differently\nif (rows.length === 0) {\n  console.log('No data found, trying alternative access methods...');\n  \n  // Try accessing by node name (replace 'Google Sheets1' with your actual client sheet node name)\n  try {\n    const gsData = $('Google Sheets1').all();\n    console.log('Found data via node name:', gsData.length);\n    rows = gsData.map(item => item.json || item);\n  } catch (e) {\n    console.log('Node name access failed:', e.message);\n  }\n  \n  // Last resort - check if data is nested differently\n  if (rows.length === 0 && items) {\n    console.log('Trying to access nested data...');\n    if (items[0] && items[0].json && items[0].json.values) {\n      rows = items[0].json.values;\n    } else if (items[0] && items[0].json && items[0].json.data) {\n      rows = items[0].json.data;\n    }\n  }\n}\n\n// Date filtering for last 30 days (if your sheet has date fields)\nconst now = new Date();\nconst thirtyDaysAgo = new Date();\nthirtyDaysAgo.setDate(now.getDate() - 30);\n\nlet totalClients = 0;\nlet clientsWithEmail = 0;\nlet clientsWithPhone = 0;\nlet clientsWithAddress = 0;\nlet completeProfiles = 0;\nlet processedRows = 0;\nlet skippedRows = 0;\n\nconsole.log('\\n=== PROCESSING CLIENT ROWS ===');\n\nrows.forEach((row, index) => {\n  console.log(`\\nRow ${index}:`, JSON.stringify(row, null, 2));\n  \n  // Skip if row is null or undefined\n  if (!row || typeof row !== 'object') {\n    console.log(`Row ${index}: Skipping - not an object`);\n    skippedRows++;\n    return;\n  }\n  \n  // Get all possible field names from the row\n  const fieldNames = Object.keys(row);\n  console.log(`Row ${index} fields:`, fieldNames);\n  \n  // Date filtering - if your client sheet has creation/registration date\n  const dateFields = ['date', 'Date', 'created_date', 'registration_date', 'timestamp', 'created_at', 'Date Created', 'Registration Date'];\n  let rowDate = null;\n  let dateField = null;\n  \n  for (const field of dateFields) {\n    if (row[field]) {\n      rowDate = new Date(row[field]);\n      if (!isNaN(rowDate.getTime())) {\n        dateField = field;\n        break;\n      }\n    }\n  }\n  \n  // If date found, check if it's within last 30 days\n  if (rowDate && dateField) {\n    console.log(`Row ${index}: Date from field '${dateField}': ${rowDate.toDateString()}`);\n    if (rowDate < thirtyDaysAgo) {\n      console.log(`Row ${index}: Skipping - date is older than 30 days`);\n      skippedRows++;\n      return;\n    }\n  } else {\n    console.log(`Row ${index}: No date found or including all records`);\n  }\n  \n  // Find client name field\n  const clientNameFields = ['client_name', 'Client name', 'Client Name', 'name', 'Name', 'client', 'Client'];\n  let clientName = '';\n  let clientNameField = null;\n  \n  for (const field of clientNameFields) {\n    if (row[field] && String(row[field]).trim() !== '') {\n      clientName = String(row[field]).trim();\n      clientNameField = field;\n      break;\n    }\n  }\n  \n  console.log(`Row ${index}: Client name from field '${clientNameField}': \"${clientName}\"`);\n  \n  // Skip if no valid client name\n  if (!clientName) {\n    console.log(`Row ${index}: Skipping - no valid client name`);\n    skippedRows++;\n    return;\n  }\n  \n  // Find email field\n  const emailFields = ['email', 'Email', 'email_address', 'Email Address', 'mail', 'Mail'];\n  let email = '';\n  let emailField = null;\n  \n  for (const field of emailFields) {\n    if (row[field] && String(row[field]).trim() !== '') {\n      email = String(row[field]).trim();\n      emailField = field;\n      break;\n    }\n  }\n  \n  console.log(`Row ${index}: Email from field '${emailField}': \"${email}\"`);\n  \n  // Find phone field\n  const phoneFields = ['phone', 'Phone', 'phone_number', 'Phone Number', 'mobile', 'Mobile', 'contact', 'Contact'];\n  let phone = '';\n  let phoneField = null;\n  \n  for (const field of phoneFields) {\n    if (row[field] && String(row[field]).trim() !== '') {\n      phone = String(row[field]).trim();\n      phoneField = field;\n      break;\n    }\n  }\n  \n  console.log(`Row ${index}: Phone from field '${phoneField}': \"${phone}\"`);\n  \n  // Find office address field\n  const addressFields = ['office_address', 'Office Address', 'address', 'Address', 'office', 'Office', 'location', 'Location'];\n  let address = '';\n  let addressField = null;\n  \n  for (const field of addressFields) {\n    if (row[field] && String(row[field]).trim() !== '') {\n      address = String(row[field]).trim();\n      addressField = field;\n      break;\n    }\n  }\n  \n  console.log(`Row ${index}: Address from field '${addressField}': \"${address}\"`);\n  \n  // Process the client data\n  totalClients++;\n  processedRows++;\n  \n  // Check what information is available\n  const hasEmail = email !== '';\n  const hasPhone = phone !== '';\n  const hasAddress = address !== '';\n  \n  if (hasEmail) clientsWithEmail++;\n  if (hasPhone) clientsWithPhone++;\n  if (hasAddress) clientsWithAddress++;\n  \n  // Complete profile = has email AND phone AND address\n  if (hasEmail && hasPhone && hasAddress) {\n    completeProfiles++;\n  }\n  \n  console.log(`Row ${index}: Processed - Email: ${hasEmail}, Phone: ${hasPhone}, Address: ${hasAddress}`);\n});\n\nconsole.log('\\n=== FINAL CLIENT RESULTS ===');\nconsole.log('Total rows found:', rows.length);\nconsole.log('Total clients processed:', totalClients);\nconsole.log('Clients with email:', clientsWithEmail);\nconsole.log('Clients with phone:', clientsWithPhone);\nconsole.log('Clients with address:', clientsWithAddress);\nconsole.log('Complete profiles:', completeProfiles);\nconsole.log('Skipped rows:', skippedRows);\n\n// Calculate percentages\nconst emailPercentage = totalClients > 0 ? ((clientsWithEmail / totalClients) * 100).toFixed(1) : 0;\nconst phonePercentage = totalClients > 0 ? ((clientsWithPhone / totalClients) * 100).toFixed(1) : 0;\nconst addressPercentage = totalClients > 0 ? ((clientsWithAddress / totalClients) * 100).toFixed(1) : 0;\nconst completePercentage = totalClients > 0 ? ((completeProfiles / totalClients) * 100).toFixed(1) : 0;\n\n// Create CSV report\nconst csv = `Client Report Summary,Count,Percentage\nTotal Clients,${totalClients},100%\nClients with Email,${clientsWithEmail},${emailPercentage}%\nClients with Phone,${clientsWithPhone},${phonePercentage}%\nClients with Address,${clientsWithAddress},${addressPercentage}%\nComplete Profiles,${completeProfiles},${completePercentage}%\nIncomplete Profiles,${totalClients - completeProfiles},${(100 - completePercentage).toFixed(1)}%\n\nReport Generated,${now.toLocaleString()}\nDate Range,Last 30 days (if date field available)`;\n\nreturn [{\n  json: {\n    email: $json[\"email\"] || \"default@email.com\",\n    totalClients: totalClients,\n    clientsWithEmail: clientsWithEmail,\n    clientsWithPhone: clientsWithPhone,\n    clientsWithAddress: clientsWithAddress,\n    completeProfiles: completeProfiles,\n    incompleteProfiles: totalClients - completeProfiles,\n    emailPercentage: parseFloat(emailPercentage),\n    phonePercentage: parseFloat(phonePercentage),\n    addressPercentage: parseFloat(addressPercentage),\n    completePercentage: parseFloat(completePercentage),\n    rowsProcessed: processedRows,\n    rowsSkipped: skippedRows,\n    debug: {\n      totalRowsFound: rows.length,\n      sampleRow: rows[0] || null,\n      fieldNames: rows[0] ? Object.keys(rows[0]) : []\n    }\n  },\n  binary: {\n    data: {\n      data: Buffer.from(csv).toString(\"base64\"),\n      mimeType: \"text/csv\",\n      fileName: `client_report_${now.toISOString().split('T')[0]}.csv`\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2280,
+        -100
+      ],
+      "id": "ebf4c1f0-801e-4f11-a59f-25965cddbf8d",
+      "name": "Code12"
+    },
+    {
+      "parameters": {
+        "jsCode": "// First, let's see what data structure we're actually receiving\nconsole.log('=== DEBUGGING DATA STRUCTURE ===');\nconsole.log('typeof items:', typeof items);\nconsole.log('items:', JSON.stringify(items, null, 2));\nconsole.log('typeof $json:', typeof $json);\nconsole.log('$json:', JSON.stringify($json, null, 2));\n\n// Try to access data in different ways\nlet rows = [];\n\n// Method 1: Direct items array\nif (items && Array.isArray(items) && items.length > 0) {\n  console.log('Using items array, length:', items.length);\n  rows = items.map(item => {\n    if (item.json) return item.json;\n    if (item.binary) return item.binary;\n    return item;\n  });\n} \n// Method 2: $input.all() method\nelse if (typeof $input !== 'undefined') {\n  try {\n    const allInputs = $input.all();\n    console.log('Using $input.all(), length:', allInputs.length);\n    rows = allInputs.map(item => item.json || item);\n  } catch (e) {\n    console.log('$input.all() failed:', e.message);\n  }\n}\n// Method 3: Direct $json access\nelse if ($json) {\n  console.log('Using $json directly');\n  if (Array.isArray($json)) {\n    rows = $json;\n  } else {\n    rows = [$json];\n  }\n}\n\nconsole.log('Final rows length:', rows.length);\nconsole.log('First few rows:', JSON.stringify(rows.slice(0, 3), null, 2));\n\n// If still no data, try accessing the previous node's output differently\nif (rows.length === 0) {\n  console.log('No data found, trying alternative access methods...');\n  \n  // Try accessing by node name (replace with your actual node name)\n  try {\n    const gsData = $('Google Sheets').all();\n    console.log('Found data via node name:', gsData.length);\n    rows = gsData.map(item => item.json || item);\n  } catch (e) {\n    console.log('Node name access failed:', e.message);\n  }\n  \n  // Last resort - check if data is nested differently\n  if (rows.length === 0 && items) {\n    console.log('Trying to access nested data...');\n    if (items[0] && items[0].json && items[0].json.values) {\n      rows = items[0].json.values;\n    } else if (items[0] && items[0].json && items[0].json.data) {\n      rows = items[0].json.data;\n    }\n  }\n}\n\n// Date filtering for last 30 days\nconst now = new Date();\nconst thirtyDaysAgo = new Date();\nthirtyDaysAgo.setDate(now.getDate() - 30);\n\n// Initialize counters\nlet totalTasks = 0;\nlet completedTasks = 0;\nlet pendingTasks = 0;\nlet failedTasks = 0;\nlet processedRows = 0;\nlet skippedRows = 0;\n\n// Employee tracking\nconst employeeStats = {};\nlet maxTaskEmployee = { id: '', count: 0 };\nlet minTaskEmployee = { id: '', count: Infinity };\n\nconsole.log('\\n=== PROCESSING ROWS ===');\nconsole.log(`Date filter: Tasks from ${thirtyDaysAgo.toDateString()} to ${now.toDateString()}`);\n\nrows.forEach((row, index) => {\n  console.log(`\\nRow ${index}:`, JSON.stringify(row, null, 2));\n  \n  // Skip if row is null or undefined\n  if (!row || typeof row !== 'object') {\n    console.log(`Row ${index}: Skipping - not an object`);\n    skippedRows++;\n    return;\n  }\n  \n  // Get all possible field names from the row\n  const fieldNames = Object.keys(row);\n  console.log(`Row ${index} fields:`, fieldNames);\n  \n  // Find task name field\n  const taskNameFields = ['Task name', 'task_name', 'task', 'Task', 'title', 'Title', 'name', 'Name'];\n  let taskName = '';\n  let taskNameField = null;\n  \n  for (const field of taskNameFields) {\n    if (row[field] !== undefined && row[field] !== null && row[field] !== '') {\n      taskName = String(row[field]).trim();\n      taskNameField = field;\n      break;\n    }\n  }\n  \n  // Find date field\n  const dateFields = ['date', 'Date', 'created_date', 'timestamp', 'created_at', 'Created Date', 'Date Created', 'task_date'];\n  let rowDate = null;\n  let dateField = null;\n  \n  for (const field of dateFields) {\n    if (row[field] && row[field] !== '') {\n      rowDate = new Date(row[field]);\n      if (!isNaN(rowDate.getTime())) {\n        dateField = field;\n        break;\n      }\n    }\n  }\n  \n  // Find assigned to field\n  const assignedFields = ['assigned to', 'assigned_to', 'assignee', 'Assignee', 'employee', 'Employee', 'user_id', 'User ID'];\n  let assignedTo = '';\n  let assignedField = null;\n  \n  for (const field of assignedFields) {\n    if (row[field] !== undefined && row[field] !== null && row[field] !== '') {\n      assignedTo = String(row[field]).trim();\n      assignedField = field;\n      break;\n    }\n  }\n  \n  // Find status field\n  const statusFields = ['status', 'Status', 'task_status', 'Task Status', 'state', 'State'];\n  let status = '';\n  let statusField = null;\n  \n  for (const field of statusFields) {\n    if (row[field] !== undefined && row[field] !== null && row[field] !== '') {\n      status = String(row[field]).toLowerCase().trim();\n      statusField = field;\n      break;\n    }\n  }\n  \n  // Find updated by field (for cases where task is updated but not assigned)\n  const updatedByFields = ['updated by', 'updated_by', 'modifier', 'Modifier', 'last_updated_by'];\n  let updatedBy = '';\n  let updatedByField = null;\n  \n  for (const field of updatedByFields) {\n    if (row[field] !== undefined && row[field] !== null && row[field] !== '') {\n      updatedBy = String(row[field]).trim();\n      updatedByField = field;\n      break;\n    }\n  }\n  \n  console.log(`Row ${index}: Task Name: \"${taskName}\", Date: ${rowDate ? rowDate.toDateString() : 'None'}, Assigned To: \"${assignedTo}\", Status: \"${status}\", Updated By: \"${updatedBy}\"`);\n  \n  // Determine if this is a valid task record\n  let isValidTask = false;\n  let taskEmployee = '';\n  \n  // Case 1: Task has name, date, and assigned employee (new task)\n  if (taskName && rowDate && assignedTo) {\n    // Check if date is within last 30 days\n    if (rowDate >= thirtyDaysAgo && rowDate <= now) {\n      isValidTask = true;\n      taskEmployee = assignedTo;\n      // If no explicit status, consider it pending\n      if (!status) {\n        status = 'pending';\n      }\n    } else {\n      console.log(`Row ${index}: Skipping - date outside 30-day range`);\n      skippedRows++;\n      return;\n    }\n  }\n  // Case 2: Task has status and updated by (task update record)\n  else if (status && updatedBy) {\n    isValidTask = true;\n    taskEmployee = updatedBy;\n    // For status updates without dates, we include them (assume they're recent)\n    console.log(`Row ${index}: Status update record - including in analysis`);\n  }\n  // Case 3: Task has assigned employee but no clear status or date\n  else if (assignedTo && taskName) {\n    isValidTask = true;\n    taskEmployee = assignedTo;\n    status = status || 'pending'; // Default to pending if no status\n    console.log(`Row ${index}: Task without date - including as pending`);\n  }\n  \n  if (!isValidTask) {\n    console.log(`Row ${index}: Skipping - not a valid task record`);\n    skippedRows++;\n    return;\n  }\n  \n  // Count the task\n  totalTasks++;\n  processedRows++;\n  \n  // Track employee statistics\n  if (taskEmployee) {\n    if (!employeeStats[taskEmployee]) {\n      employeeStats[taskEmployee] = {\n        totalTasks: 0,\n        completed: 0,\n        pending: 0,\n        failed: 0\n      };\n    }\n    employeeStats[taskEmployee].totalTasks++;\n    \n    // Update employee task counts for min/max tracking\n    const employeeTaskCount = employeeStats[taskEmployee].totalTasks;\n    if (employeeTaskCount > maxTaskEmployee.count) {\n      maxTaskEmployee = { id: taskEmployee, count: employeeTaskCount };\n    }\n    if (employeeTaskCount < minTaskEmployee.count) {\n      minTaskEmployee = { id: taskEmployee, count: employeeTaskCount };\n    }\n  }\n  \n  // Categorize by status\n  if (status.includes('completed') || status.includes('done') || status.includes('finished')) {\n    completedTasks++;\n    if (taskEmployee) employeeStats[taskEmployee].completed++;\n    console.log(`Row ${index}: Categorized as COMPLETED`);\n  } else if (status.includes('failed') || status.includes('error') || status.includes('cancelled')) {\n    failedTasks++;\n    if (taskEmployee) employeeStats[taskEmployee].failed++;\n    console.log(`Row ${index}: Categorized as FAILED`);\n  } else {\n    // Default to pending (includes empty status, 'pending', 'in progress', etc.)\n    pendingTasks++;\n    if (taskEmployee) employeeStats[taskEmployee].pending++;\n    console.log(`Row ${index}: Categorized as PENDING`);\n  }\n});\n\n// Reset min employee if no valid employees found\nif (minTaskEmployee.count === Infinity) {\n  minTaskEmployee = { id: '', count: 0 };\n}\n\nconsole.log('\\n=== EMPLOYEE ANALYSIS ===');\nconsole.log('Employee stats:', employeeStats);\nconsole.log('Max task employee:', maxTaskEmployee);\nconsole.log('Min task employee:', minTaskEmployee);\n\nconsole.log('\\n=== FINAL RESULTS ===');\nconsole.log('Total rows found:', rows.length);\nconsole.log('Processed rows:', processedRows);\nconsole.log('Skipped rows:', skippedRows);\nconsole.log('Total tasks:', totalTasks);\nconsole.log('Completed:', completedTasks);\nconsole.log('Pending:', pendingTasks);\nconsole.log('Failed:', failedTasks);\n\n// Create detailed employee breakdown for CSV\nlet employeeBreakdown = '';\nconst sortedEmployees = Object.entries(employeeStats).sort((a, b) => b[1].totalTasks - a[1].totalTasks);\nsortedEmployees.forEach(([employeeId, stats]) => {\n  employeeBreakdown += `Employee ${employeeId},${stats.totalTasks},${stats.completed},${stats.pending},${stats.failed}\\n`;\n});\n\n// Calculate percentages\nconst completedPercentage = totalTasks > 0 ? ((completedTasks / totalTasks) * 100).toFixed(1) : 0;\nconst pendingPercentage = totalTasks > 0 ? ((pendingTasks / totalTasks) * 100).toFixed(1) : 0;\nconst failedPercentage = totalTasks > 0 ? ((failedTasks / totalTasks) * 100).toFixed(1) : 0;\n\n// Create comprehensive CSV\nconst csv = `Task Analysis Report - Last 30 Days\nGenerated on: ${now.toDateString()}\n\nSUMMARY\nMetric,Count,Percentage\nTotal Tasks,${totalTasks},100%\nCompleted Tasks,${completedTasks},${completedPercentage}%\nPending Tasks,${pendingTasks},${pendingPercentage}%\nFailed Tasks,${failedTasks},${failedPercentage}%\n\nEMPLOYEE PERFORMANCE\nEmployee with Most Tasks,Employee ${maxTaskEmployee.id},${maxTaskEmployee.count}\nEmployee with Least Tasks,Employee ${minTaskEmployee.id},${minTaskEmployee.count}\nTotal Employees,${Object.keys(employeeStats).length},\n\nEMPLOYEE BREAKDOWN\nEmployee,Total Tasks,Completed,Pending,Failed\n${employeeBreakdown}\nPROCESSING STATISTICS\nTotal Rows Processed,${processedRows},\nTotal Rows Skipped,${skippedRows},\nDate Range,Last 30 days,\nAnalysis Date,${now.toISOString().split('T')[0]},`;\n\nreturn [{\n  json: {\n    email: $json[\"email\"] || \"default@email.com\",\n    taskSummary: {\n      totalTasks: totalTasks,\n      completed: completedTasks,\n      pending: pendingTasks,\n      failed: failedTasks,\n      completedPercentage: parseFloat(completedPercentage),\n      pendingPercentage: parseFloat(pendingPercentage),\n      failedPercentage: parseFloat(failedPercentage)\n    },\n    employeeAnalysis: {\n      maxTaskEmployee: maxTaskEmployee,\n      minTaskEmployee: minTaskEmployee,\n      totalEmployees: Object.keys(employeeStats).length,\n      employeeBreakdown: sortedEmployees.map(([id, stats]) => ({\n        employeeId: id,\n        ...stats\n      }))\n    },\n    processingStats: {\n      totalRowsFound: rows.length,\n      processedRows: processedRows,\n      skippedRows: skippedRows,\n      dateRange: \"Last 30 days\"\n    },\n    debug: {\n      sampleRow: rows[0] || null,\n      fieldNames: rows[0] ? Object.keys(rows[0]) : []\n    }\n  },\n  binary: {\n    data: {\n      data: Buffer.from(csv).toString(\"base64\"),\n      mimeType: \"text/csv\",\n      fileName: `task_report_${now.toISOString().split('T')[0]}.csv`\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2280,
+        80
+      ],
+      "id": "e88d1409-6722-4f97-a97c-41441930f6ee",
+      "name": "Code13"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1UP3SXs1METMCiuY_ykvxghoE1frqdes9gvoEkLuK0Vs",
+          "mode": "list",
+          "cachedResultName": "Customer project",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UP3SXs1METMCiuY_ykvxghoE1frqdes9gvoEkLuK0Vs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UP3SXs1METMCiuY_ykvxghoE1frqdes9gvoEkLuK0Vs/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -2420,
+        300
+      ],
+      "id": "05883475-380f-41a8-b4fc-838f0dc47751",
+      "name": "Google Sheets19",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// First, let's see what data structure we're actually receiving\nconsole.log('=== DEBUGGING DATA STRUCTURE ===');\nconsole.log('typeof items:', typeof items);\nconsole.log('items:', JSON.stringify(items, null, 2));\nconsole.log('typeof $json:', typeof $json);\nconsole.log('$json:', JSON.stringify($json, null, 2));\n\n// Try to access data in different ways\nlet rows = [];\n\n// Method 1: Direct items array\nif (items && Array.isArray(items) && items.length > 0) {\n  console.log('Using items array, length:', items.length);\n  rows = items.map(item => {\n    if (item.json) return item.json;\n    if (item.binary) return item.binary;\n    return item;\n  });\n} \n// Method 2: $input.all() method\nelse if (typeof $input !== 'undefined') {\n  try {\n    const allInputs = $input.all();\n    console.log('Using $input.all(), length:', allInputs.length);\n    rows = allInputs.map(item => item.json || item);\n  } catch (e) {\n    console.log('$input.all() failed:', e.message);\n  }\n}\n// Method 3: Direct $json access\nelse if ($json) {\n  console.log('Using $json directly');\n  if (Array.isArray($json)) {\n    rows = $json;\n  } else {\n    rows = [$json];\n  }\n}\n\nconsole.log('Final rows length:', rows.length);\nconsole.log('First few rows:', JSON.stringify(rows.slice(0, 3), null, 2));\n\n// If still no data, try accessing the previous node's output differently\nif (rows.length === 0) {\n  console.log('No data found, trying alternative access methods...');\n  \n  // Try accessing by node name (replace with your actual node name)\n  try {\n    const gsData = $('Google Sheets').all();\n    console.log('Found data via node name:', gsData.length);\n    rows = gsData.map(item => item.json || item);\n  } catch (e) {\n    console.log('Node name access failed:', e.message);\n  }\n  \n  // Last resort - check if data is nested differently\n  if (rows.length === 0 && items) {\n    console.log('Trying to access nested data...');\n    if (items[0] && items[0].json && items[0].json.values) {\n      rows = items[0].json.values;\n    } else if (items[0] && items[0].json && items[0].json.data) {\n      rows = items[0].json.data;\n    }\n  }\n}\n\n// Date calculations\nconst now = new Date();\nconst thirtyDaysAgo = new Date();\nthirtyDaysAgo.setDate(now.getDate() - 30);\n\nconst sevenWeeksFromNow = new Date();\nsevenWeeksFromNow.setDate(now.getDate() + (7 * 7)); // 7 weeks = 49 days\n\n// Initialize counters\nlet totalProjectsLast30Days = 0;\nlet projectsEndingIn7Weeks = 0;\nlet processedRows = 0;\nlet skippedRows = 0;\n\n// Project tracking\nconst projectsLast30Days = [];\nconst projectsEndingSoon = [];\nconst clientProjects = {};\n\nconsole.log('\\n=== DATE RANGES ===');\nconsole.log(`Last 30 days: ${thirtyDaysAgo.toDateString()} to ${now.toDateString()}`);\nconsole.log(`Next 7 weeks: ${now.toDateString()} to ${sevenWeeksFromNow.toDateString()}`);\n\nconsole.log('\\n=== PROCESSING ROWS ===');\n\nrows.forEach((row, index) => {\n  console.log(`\\nRow ${index}:`, JSON.stringify(row, null, 2));\n  \n  // Skip if row is null or undefined\n  if (!row || typeof row !== 'object') {\n    console.log(`Row ${index}: Skipping - not an object`);\n    skippedRows++;\n    return;\n  }\n  \n  // Get all possible field names from the row\n  const fieldNames = Object.keys(row);\n  console.log(`Row ${index} fields:`, fieldNames);\n  \n  // Find client name field\n  const clientNameFields = ['Client Name', 'client_name', 'client', 'Client', 'customer', 'Customer', 'Customer Name'];\n  let clientName = '';\n  let clientNameField = null;\n  \n  for (const field of clientNameFields) {\n    if (row[field] !== undefined && row[field] !== null && row[field] !== '') {\n      clientName = String(row[field]).trim();\n      clientNameField = field;\n      break;\n    }\n  }\n  \n  // Find client email field\n  const clientEmailFields = ['Client Email', 'client_email', 'email', 'Email', 'customer_email', 'Customer Email'];\n  let clientEmail = '';\n  let clientEmailField = null;\n  \n  for (const field of clientEmailFields) {\n    if (row[field] !== undefined && row[field] !== null && row[field] !== '') {\n      clientEmail = String(row[field]).trim();\n      clientEmailField = field;\n      break;\n    }\n  }\n  \n  // Find project name field\n  const projectNameFields = ['Project Name', 'project_name', 'project', 'Project', 'title', 'Title', 'name', 'Name'];\n  let projectName = '';\n  let projectNameField = null;\n  \n  for (const field of projectNameFields) {\n    if (row[field] !== undefined && row[field] !== null && row[field] !== '') {\n      projectName = String(row[field]).trim();\n      projectNameField = field;\n      break;\n    }\n  }\n  \n  // Find end date field\n  const endDateFields = ['End date', 'end_date', 'endDate', 'End Date', 'deadline', 'Deadline', 'due_date', 'Due Date', 'completion_date'];\n  let endDate = null;\n  let endDateField = null;\n  \n  for (const field of endDateFields) {\n    if (row[field] && row[field] !== '') {\n      endDate = new Date(row[field]);\n      if (!isNaN(endDate.getTime())) {\n        endDateField = field;\n        break;\n      }\n    }\n  }\n  \n  // Find start date field (optional, for better analysis)\n  const startDateFields = ['Start date', 'start_date', 'startDate', 'Start Date', 'created_date', 'Created Date', 'project_start'];\n  let startDate = null;\n  let startDateField = null;\n  \n  for (const field of startDateFields) {\n    if (row[field] && row[field] !== '') {\n      startDate = new Date(row[field]);\n      if (!isNaN(startDate.getTime())) {\n        startDateField = field;\n        break;\n      }\n    }\n  }\n  \n  console.log(`Row ${index}: Client: \"${clientName}\", Email: \"${clientEmail}\", Project: \"${projectName}\", End Date: ${endDate ? endDate.toDateString() : 'None'}, Start Date: ${startDate ? startDate.toDateString() : 'None'}`);\n  \n  // Validate essential fields\n  if (!projectName || !endDate) {\n    console.log(`Row ${index}: Skipping - missing essential fields (project name or end date)`);\n    skippedRows++;\n    return;\n  }\n  \n  processedRows++;\n  \n  const projectData = {\n    clientName: clientName,\n    clientEmail: clientEmail,\n    projectName: projectName,\n    endDate: endDate,\n    startDate: startDate,\n    endDateString: endDate.toDateString(),\n    daysUntilEnd: Math.ceil((endDate - now) / (1000 * 60 * 60 * 24))\n  };\n  \n  // Check if project was created/started in last 30 days\n  let isProjectFromLast30Days = false;\n  \n  // If we have start date, use it for filtering\n  if (startDate) {\n    if (startDate >= thirtyDaysAgo && startDate <= now) {\n      isProjectFromLast30Days = true;\n      console.log(`Row ${index}: Project started in last 30 days (${startDate.toDateString()})`);\n    }\n  }\n  // If no start date, assume project entry date is recent (common scenario)\n  else {\n    // For projects without start dates, we'll include them if they seem recent\n    // This is because your data might not have start dates but represents recent project entries\n    isProjectFromLast30Days = true;\n    console.log(`Row ${index}: No start date found, assuming recent project entry`);\n  }\n  \n  // Count projects from last 30 days\n  if (isProjectFromLast30Days) {\n    totalProjectsLast30Days++;\n    projectsLast30Days.push(projectData);\n    console.log(`Row ${index}: Added to last 30 days count`);\n  }\n  \n  // Check if project ends in next 7 weeks\n  if (endDate >= now && endDate <= sevenWeeksFromNow) {\n    projectsEndingIn7Weeks++;\n    projectsEndingSoon.push(projectData);\n    console.log(`Row ${index}: Project ends in next 7 weeks (${projectData.daysUntilEnd} days)`);\n  } else if (endDate < now) {\n    console.log(`Row ${index}: Project already ended (${Math.abs(projectData.daysUntilEnd)} days ago)`);\n  } else {\n    console.log(`Row ${index}: Project ends beyond 7 weeks (${projectData.daysUntilEnd} days)`);\n  }\n  \n  // Track client projects\n  if (clientName) {\n    if (!clientProjects[clientName]) {\n      clientProjects[clientName] = {\n        email: clientEmail,\n        projects: [],\n        totalProjects: 0,\n        endingSoon: 0\n      };\n    }\n    clientProjects[clientName].projects.push(projectData);\n    clientProjects[clientName].totalProjects++;\n    \n    if (endDate >= now && endDate <= sevenWeeksFromNow) {\n      clientProjects[clientName].endingSoon++;\n    }\n  }\n});\n\nconsole.log('\\n=== ANALYSIS RESULTS ===');\nconsole.log('Total rows found:', rows.length);\nconsole.log('Processed rows:', processedRows);\nconsole.log('Skipped rows:', skippedRows);\nconsole.log('Projects from last 30 days:', totalProjectsLast30Days);\nconsole.log('Projects ending in next 7 weeks:', projectsEndingIn7Weeks);\nconsole.log('Total unique clients:', Object.keys(clientProjects).length);\n\n// Sort projects ending soon by end date\nprojectsEndingSoon.sort((a, b) => a.endDate - b.endDate);\n\n// Create detailed breakdown for CSV\nlet projectsLast30DaysBreakdown = '';\nprojectsLast30Days.forEach(project => {\n  projectsLast30DaysBreakdown += `\"${project.clientName}\",\"${project.clientEmail}\",\"${project.projectName}\",\"${project.endDateString}\"\\n`;\n});\n\nlet projectsEndingSoonBreakdown = '';\nprojectsEndingSoon.forEach(project => {\n  projectsEndingSoonBreakdown += `\"${project.clientName}\",\"${project.clientEmail}\",\"${project.projectName}\",\"${project.endDateString}\",${project.daysUntilEnd}\\n`;\n});\n\nlet clientBreakdown = '';\nObject.entries(clientProjects).forEach(([clientName, data]) => {\n  clientBreakdown += `\"${clientName}\",\"${data.email}\",${data.totalProjects},${data.endingSoon}\\n`;\n});\n\n// Create comprehensive CSV\nconst csv = `Project Analysis Report\nGenerated on: ${now.toDateString()}\n\nSUMMARY\nMetric,Count\nTotal Projects (Last 30 Days),${totalProjectsLast30Days}\nProjects Ending in Next 7 Weeks,${projectsEndingIn7Weeks}\nTotal Unique Clients,${Object.keys(clientProjects).length}\nTotal Rows Processed,${processedRows}\n\nPROJECTS FROM LAST 30 DAYS\nClient Name,Client Email,Project Name,End Date\n${projectsLast30DaysBreakdown}\nPROJECTS ENDING IN NEXT 7 WEEKS\nClient Name,Client Email,Project Name,End Date,Days Until End\n${projectsEndingSoonBreakdown}\nCLIENT BREAKDOWN\nClient Name,Email,Total Projects,Ending Soon\n${clientBreakdown}\nPROCESSING STATISTICS\nTotal Rows Found,${rows.length}\nProcessed Rows,${processedRows}\nSkipped Rows,${skippedRows}\nAnalysis Date,${now.toISOString().split('T')[0]}\nDate Ranges Used,\nLast 30 Days,${thirtyDaysAgo.toDateString()} to ${now.toDateString()}\nNext 7 Weeks,${now.toDateString()} to ${sevenWeeksFromNow.toDateString()}`;\n\nreturn [{\n  json: {\n    email: $json[\"email\"] || \"default@email.com\",\n    projectSummary: {\n      totalProjectsLast30Days: totalProjectsLast30Days,\n      projectsEndingIn7Weeks: projectsEndingIn7Weeks,\n      totalUniqueClients: Object.keys(clientProjects).length\n    },\n    projectsLast30Days: projectsLast30Days,\n    projectsEndingSoon: projectsEndingSoon.map(project => ({\n      ...project,\n      endDate: project.endDate.toISOString(),\n      startDate: project.startDate ? project.startDate.toISOString() : null\n    })),\n    clientAnalysis: Object.entries(clientProjects).map(([name, data]) => ({\n      clientName: name,\n      clientEmail: data.email,\n      totalProjects: data.totalProjects,\n      projectsEndingSoon: data.endingSoon,\n      projects: data.projects.map(p => ({\n        ...p,\n        endDate: p.endDate.toISOString(),\n        startDate: p.startDate ? p.startDate.toISOString() : null\n      }))\n    })),\n    processingStats: {\n      totalRowsFound: rows.length,\n      processedRows: processedRows,\n      skippedRows: skippedRows,\n      dateRanges: {\n        last30Days: `${thirtyDaysAgo.toDateString()} to ${now.toDateString()}`,\n        next7Weeks: `${now.toDateString()} to ${sevenWeeksFromNow.toDateString()}`\n      }\n    },\n    debug: {\n      sampleRow: rows[0] || null,\n      fieldNames: rows[0] ? Object.keys(rows[0]) : []\n    }\n  },\n  binary: {\n    data: {\n      data: Buffer.from(csv).toString(\"base64\"),\n      mimeType: \"text/csv\",\n      fileName: `project_report_${now.toISOString().split('T')[0]}.csv`\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2280,
+        300
+      ],
+      "id": "4bd42187-8149-4ade-925d-1b6b3ff27554",
+      "name": "Code16"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1ysPq2gNNQ33E6weGKc0fl4i2sGoCnoo87-5sX0QeN-0",
+          "mode": "list",
+          "cachedResultName": "tele",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ysPq2gNNQ33E6weGKc0fl4i2sGoCnoo87-5sX0QeN-0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ysPq2gNNQ33E6weGKc0fl4i2sGoCnoo87-5sX0QeN-0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Telegram id": "={{ $json.body.telegramId }}"
+          },
+          "matchingColumns": [
+            "Telegram id"
+          ],
+          "schema": [
+            {
+              "id": "Telegram id",
+              "displayName": "Telegram id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -3160,
+        -20
+      ],
+      "id": "b81dc7e6-40ce-44e1-890a-b332746a761e",
+      "name": "Google Sheets20",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ysPq2gNNQ33E6weGKc0fl4i2sGoCnoo87-5sX0QeN-0",
+          "mode": "list",
+          "cachedResultName": "tele",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ysPq2gNNQ33E6weGKc0fl4i2sGoCnoo87-5sX0QeN-0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ysPq2gNNQ33E6weGKc0fl4i2sGoCnoo87-5sX0QeN-0/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -2180,
+        -460
+      ],
+      "id": "71b16198-5bf1-45a0-b928-0412006d4666",
+      "name": "Google Sheets21",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -2040,
+        -40
+      ],
+      "id": "2963363c-0468-4251-9ba1-2bb39392cb51",
+      "name": "Merge4"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -540,
+        180
+      ],
+      "id": "6d163580-76c4-41d6-8a65-418929d43e5a",
+      "name": "Merge5"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -580,
+        -220
+      ],
+      "id": "798ec0e7-d4e0-4f5a-9bef-44f01d8a5467",
+      "name": "Merge6"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -1220,
+        -60
+      ],
+      "id": "3489771a-9b3e-47fb-8a96-d252c97d15a7",
+      "name": "Merge7"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ysPq2gNNQ33E6weGKc0fl4i2sGoCnoo87-5sX0QeN-0",
+          "mode": "list",
+          "cachedResultName": "tele",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ysPq2gNNQ33E6weGKc0fl4i2sGoCnoo87-5sX0QeN-0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ysPq2gNNQ33E6weGKc0fl4i2sGoCnoo87-5sX0QeN-0/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -120,
+        -220
+      ],
+      "id": "a0b0c91f-fc44-4874-b047-62d26e0d3c05",
+      "name": "Google Sheets22",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "631fc343-c26e-4af0-a18a-192c7eb5991c",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        500,
+        -320
+      ],
+      "id": "eee92cba-c5e1-43fa-b1bb-b858db83de2e",
+      "name": "Remind me",
+      "webhookId": "631fc343-c26e-4af0-a18a-192c7eb5991c"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "517ddbcc-12e2-47f3-8217-03c40abe0112",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        500,
+        -120
+      ],
+      "id": "60627d8f-8974-4896-ad3f-57ac77284ce6",
+      "name": "Main send",
+      "webhookId": "517ddbcc-12e2-47f3-8217-03c40abe0112"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "05c1e19a-d24a-4dc0-8002-a0a234fe4456",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        3080,
+        -300
+      ],
+      "id": "0004c1e0-f7e7-4453-9fdc-62fb4e084469",
+      "name": "employee button",
+      "webhookId": "05c1e19a-d24a-4dc0-8002-a0a234fe4456"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Mark 1 here! wishing you for  {{ $json.Event }}",
+        "message": "=Greeting on the behalf of shubh team novus wishes you for  {{ $json.Event }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2980,
+        -700
+      ],
+      "id": "43454e2e-d0fc-4bc3-9642-2c0c8063d266",
+      "name": "Gmail2",
+      "webhookId": "04cb9598-9f08-4856-9e81-80a74c4aefb0",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VPvt3QZfqvhb53Un",
+          "name": "Gmail account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24,
+              "triggerAtMinute": null
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        2280,
+        -700
+      ],
+      "id": "49b7d86a-5ff2-4b01-86df-03f8e7007e2c",
+      "name": "Schedule Trigger2",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Lg89K5GSk34bogDxuZYbqb4vYsRFsuJpX1pImZoM9uo",
+          "mode": "list",
+          "cachedResultName": "customer dates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lg89K5GSk34bogDxuZYbqb4vYsRFsuJpX1pImZoM9uo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lg89K5GSk34bogDxuZYbqb4vYsRFsuJpX1pImZoM9uo/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2500,
+        -700
+      ],
+      "id": "d240c630-a5ab-4cf5-8ac7-b83caa6fbbe5",
+      "name": "Google Sheets23",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const today = new Date();\nconst todayMonthDay = `${today.getMonth() + 1}-${today.getDate()}`;\n\nreturn items.filter(item => {\n  const data = item.json;\n\n  if (!data[\"Date\"]) return false;\n\n  const eventDate = new Date(data[\"Date\"]);\n  const eventMonthDay = `${eventDate.getMonth() + 1}-${eventDate.getDate()}`;\n\n  return eventMonthDay === todayMonthDay;\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2720,
+        -700
+      ],
+      "id": "4f622f8d-2625-4a35-9f75-fcb494b5f5c4",
+      "name": "Code17"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {},
+        "options": {
+          "downloadAttachments": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -600,
+        800
+      ],
+      "id": "415e37f0-7b36-4028-9f65-1f3df0f06e30",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VPvt3QZfqvhb53Un",
+          "name": "Gmail account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $json.id }}",
+        "simple": false,
+        "options": {
+          "dataPropertyAttachmentsPrefixName": "attachment_",
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -220,
+        1000
+      ],
+      "id": "a076ea61-f3c7-4462-8719-25b637a8ef2e",
+      "name": "Gmail",
+      "webhookId": "5259d7e4-3815-4d06-af15-e82ff91a3a1d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VPvt3QZfqvhb53Un",
+          "name": "Gmail account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "searchMethod": "query",
+        "queryString": "name = 'novusclient' and mimeType = 'application/vnd.google-apps.folder' and trashed = false",
+        "filter": {
+          "driveId": {
+            "mode": "list",
+            "value": "My Drive"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -200,
+        1260
+      ],
+      "id": "053273d4-fb4f-4df0-a2a5-71bdfc4f4b67",
+      "name": "search client folder",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "OG6fU0W5rGVFj1u5",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "15f86c90-4c34-4539-b78d-9f6c842fe1f1",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "boolean",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -220,
+        1720
+      ],
+      "id": "6d5b2189-f6f9-46f0-88ab-0fe5e0bbc25a",
+      "name": "If no client folder"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "novusclient",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -220,
+        2040
+      ],
+      "id": "6b9b4072-99c5-41f4-b16f-7f08b6d1a24e",
+      "name": "create client folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "OG6fU0W5rGVFj1u5",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $('Gmail').item.json.from.value[0].name }}",
+        "limit": 1,
+        "filter": {
+          "driveId": {
+            "mode": "list",
+            "value": "My Drive"
+          },
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $json.files ? $json.files[0].id : $json.id }}",
+            "mode": "id"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        640,
+        1540
+      ],
+      "id": "5c8df6e5-3413-4b17-b128-eb5da11106c6",
+      "name": "search client name",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "OG6fU0W5rGVFj1u5",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "00eaa6ff-77d5-4ea7-b1e9-ce82c0b003cc",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "boolean",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        920,
+        1540
+      ],
+      "id": "28c29fc5-5ca0-4bec-8ea0-9a8eb4d51449",
+      "name": "If no client name"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $('Gmail').item.json.from.value[0].name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        940,
+        1780
+      ],
+      "id": "37ecdc1b-b98a-4bcd-b9ca-030694a35224",
+      "name": "create client name",
+      "executeOnce": false,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "OG6fU0W5rGVFj1u5",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "={{ Object.keys($binary)[0] }}",
+        "name": "={{ $binary[Object.keys($binary)[0]].fileName }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Filter').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1580,
+        1000
+      ],
+      "id": "2cb2d04b-16c1-487d-a788-38b19bdc3c0b",
+      "name": "Upload Attachments",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "OG6fU0W5rGVFj1u5",
+          "name": "Google Drive account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0045ffc4-57a0-4807-828f-c8016177e045",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1360,
+        1520
+      ],
+      "id": "09d678ee-8621-4902-9369-b323f5a3b0df",
+      "name": "Filter",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1320,
+        1000
+      ],
+      "id": "8cbeb965-a342-42b8-894d-ee801c431a68",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9d568db3-a9bb-45e0-a4ab-997d2cd3dd52",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -500,
+        1500
+      ],
+      "id": "f379797b-b8fe-446d-b51c-947820ce042f",
+      "name": "Filter1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -460,
+        1760
+      ],
+      "id": "551b0ea0-9dc4-4ec4-b966-15d139d98fd1",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        640,
+        1780
+      ],
+      "id": "6ac47191-7ad0-4f12-a3d0-ce5f807b94af",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1eyCy6LDyR-3FbJh9lLgOV7lr9b6-YlWZ3AgAIwwBbgs",
+          "mode": "list",
+          "cachedResultName": "customer data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eyCy6LDyR-3FbJh9lLgOV7lr9b6-YlWZ3AgAIwwBbgs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1eyCy6LDyR-3FbJh9lLgOV7lr9b6-YlWZ3AgAIwwBbgs/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -600,
+        1020
+      ],
+      "id": "6c012500-e71c-4184-99c9-aefc84967007",
+      "name": "Google Sheets24",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.from.value[0].address }}",
+                    "rightValue": "={{ $json.Email }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "b0f5e017-3be6-499b-96f0-7ba885e4258e"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -400,
+        1120
+      ],
+      "id": "10c2bb33-0133-435e-8390-b7293a9d8654",
+      "name": "Switch5"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 12
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        1700,
+        -240
+      ],
+      "id": "d2a1f0c6-65ee-45d8-8713-62f47d29e6bc",
+      "name": "Schedule Trigger3"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "shubhayan.work@gmail.com",
+          "mode": "list",
+          "cachedResultName": "shubhayan.work@gmail.com"
+        },
+        "timeMax": "={{ $now.plus({ day: 1 }).startOf('day') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        1860,
+        -240
+      ],
+      "id": "9421f055-1c26-449d-926f-463bab8188ac",
+      "name": "Google Calendar2",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "vgsna1cqjbT9Pewj",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\n\nreturn items.filter(item => {\n  const start = new Date(item.json.start.dateTime || item.json.start.date);  // Handles all-day events too\n  const end = new Date(item.json.end.dateTime || item.json.end.date);\n  return start <= now && now <= end;\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        -280
+      ],
+      "id": "ca81b8c0-5158-42dc-a4c2-9f9d80e1136c",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "70de41be-6955-42b5-9cda-eca71606a9a6",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        220
+      ],
+      "id": "9f872a27-ab7a-4aff-8737-f62d2998a25f",
+      "name": "Webhook",
+      "webhookId": "70de41be-6955-42b5-9cda-eca71606a9a6"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "18vhRZXmxP_3Xgb0-I-6Asin6OMjvtaol75gmGrAuCeY",
+          "mode": "list",
+          "cachedResultName": "Task Assign",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18vhRZXmxP_3Xgb0-I-6Asin6OMjvtaol75gmGrAuCeY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18vhRZXmxP_3Xgb0-I-6Asin6OMjvtaol75gmGrAuCeY/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1680,
+        220
+      ],
+      "id": "925af106-06d5-4ac3-bf8a-48c8c86481c3",
+      "name": "Google Sheets25",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7xCasW61mZ8Ad8Zj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1820,
+        220
+      ],
+      "id": "d83816fb-2511-44e0-b58b-1b9d798924cf",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f700a213-3f16-40a1-acf2-49a4def3253e",
+              "name": "body.user_id",
+              "value": "={{ $json.body.user_id }}",
+              "type": "string"
+            },
+            {
+              "id": "14b89d2a-dbcb-47f7-b3d3-eec7db5418bb",
+              "name": "body.email",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "75857eca-87aa-49fc-9a86-c04d0e53dd6e",
+              "name": "body.name",
+              "value": "={{ $json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "c202b779-1896-4df8-a60b-cef207c249fc",
+              "name": "body.access_token",
+              "value": "={{ $json.body.access_token }}",
+              "type": "string"
+            },
+            {
+              "id": "b13b4d9f-754c-4937-be78-073437e5c1ee",
+              "name": "body.expires_in",
+              "value": "={{ $json.body.expires_in }}",
+              "type": "number"
+            },
+            {
+              "id": "af9c6baa-b217-4ec8-9238-5a732892d5ff",
+              "name": "body.timestamp",
+              "value": "={{ $json.body.timestamp }}",
+              "type": "string"
+            },
+            {
+              "id": "82d2c4f8-a509-427a-9850-396216a42031",
+              "name": "body.refresh_token",
+              "value": "={{ $json.body.refresh_token }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3680,
+        0
+      ],
+      "id": "8f8e265a-7f00-4d1a-a0a8-5e307438299b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "4107c769-ade1-4767-9153-13b2406de892",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -3900,
+        0
+      ],
+      "id": "4d94751c-c5d7-485a-bf2c-c4cc376e8ae8",
+      "name": "Webhook1",
+      "webhookId": "4107c769-ade1-4767-9153-13b2406de892"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1QvaAjFn0-mFree-sTS_u3GgSAdcDgXzL6xvtNEfg2p4",
+          "mode": "list",
+          "cachedResultName": "CC",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QvaAjFn0-mFree-sTS_u3GgSAdcDgXzL6xvtNEfg2p4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QvaAjFn0-mFree-sTS_u3GgSAdcDgXzL6xvtNEfg2p4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            " user_id": "={{ $json.body.user_id }}",
+            "email": "={{ $json.body.email }}",
+            "name": "={{ $json.body.name }}",
+            "access_token": "={{ $json.body.access_token }}",
+            "expires_at": "={{ $json.body.expires_in }}",
+            "created_at": "={{ $json.body.timestamp }}",
+            "refresh_token": "={{ $json.body.refresh_token }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": " user_id",
+              "displayName": " user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "access_token",
+              "displayName": "access_token",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "refresh_token",
+              "displayName": "refresh_token",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "expires_at",
+              "displayName": "expires_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -3460,
+        0
+      ],
+      "id": "d491d59f-1b02-4ac5-a36d-6794f82fce83",
+      "name": "Google Sheets26",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lCIcF9mbOXqwrwzM",
+          "name": "Google Sheets account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code7": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 1 Day Before": {
+      "main": [
+        [
+          {
+            "node": "Telegram 1 Day Before",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 1 Hour Before": {
+      "main": [
+        [
+          {
+            "node": "Telegram 1 Hour Before",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar": {
+      "main": [
+        []
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code4": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code5": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code6": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        [
+          {
+            "node": "Code8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code8": {
+      "main": [
+        [
+          {
+            "node": "Merge6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets7": {
+      "main": [
+        [
+          {
+            "node": "Code9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code9": {
+      "main": [
+        [
+          {
+            "node": "Merge7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets22",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets7",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets22",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets8",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets22",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets8": {
+      "main": [
+        [
+          {
+            "node": "Code10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code10": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets12": {
+      "main": [
+        [
+          {
+            "node": "Filter Today's End Dates1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Today's End Dates1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Gmail4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Projects Today1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch4": {
+      "main": [
+        [
+          {
+            "node": "Code14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code14": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets14": {
+      "main": [
+        [
+          {
+            "node": "Code15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code15": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets16",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets16": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets17": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send report": {
+      "main": [
+        [
+          {
+            "node": "Switch3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch3": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets9",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets21",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets10",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets21",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets11",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets21",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets19",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets21",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets20",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets21",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets9": {
+      "main": [
+        [
+          {
+            "node": "Code11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code11": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Google Sheets10": {
+      "main": [
+        [
+          {
+            "node": "Code12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets11": {
+      "main": [
+        [
+          {
+            "node": "Code13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code12": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code13": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Google Sheets19": {
+      "main": [
+        [
+          {
+            "node": "Code16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code16": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Google Sheets21": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Telegram4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge5": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge6": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge7": {
+      "main": [
+        [
+          {
+            "node": "Telegram2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets22": {
+      "main": [
+        [
+          {
+            "node": "Merge7",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge6",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Remind me": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Main send": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Switch4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "employee button": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger2": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets23",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets23": {
+      "main": [
+        [
+          {
+            "node": "Code17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code17": {
+      "main": [
+        [
+          {
+            "node": "Gmail2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets24",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Switch5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "search client folder",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "search client folder": {
+      "main": [
+        [
+          {
+            "node": "If no client folder",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If no client folder": {
+      "main": [
+        [
+          {
+            "node": "search client name",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "create client folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create client folder": {
+      "main": [
+        [
+          {
+            "node": "search client name",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search client name": {
+      "main": [
+        [
+          {
+            "node": "If no client name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If no client name": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "create client name": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Upload Attachments",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "create client name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets24": {
+      "main": [
+        [
+          {
+            "node": "Switch5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch5": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram3": {
+      "main": [
+        []
+      ]
+    },
+    "Schedule Trigger3": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar2": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Telegram3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait 1 Day Before",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait 1 Hour Before",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets13": {
+      "main": [
+        []
+      ]
+    },
+    "Google Sheets5": {
+      "main": [
+        []
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets25",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets25": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets26",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c42ee491-6582-4b36-ab55-290b6a520d77",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2d558de456d39cfe65a2b1f5409a4442dbea6e279245c4ab0c3cb45e3af343d1"
+  },
+  "id": "6PPhhGDb4qFRWqiw",
+  "tags": []
+}
